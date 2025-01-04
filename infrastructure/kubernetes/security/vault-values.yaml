@@ -1,0 +1,146 @@
+# HashiCorp Vault Helm Chart Values
+# Version: 1.13.1
+# Purpose: Secure secrets management and encryption for TALD UNIA Audio System
+
+global:
+  enabled: true
+  tlsDisable: false
+  logLevel: info
+  logFormat: json
+  image:
+    repository: hashicorp/vault
+    tag: 1.13.1
+    pullPolicy: IfNotPresent
+
+injector:
+  enabled: true
+  replicas: 3
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  metrics:
+    enabled: true
+    prometheusLabels:
+      release: prometheus
+
+server:
+  replicas: 3
+  ha:
+    enabled: true
+    raft:
+      enabled: true
+      setNodeId: true
+  
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+      cpu: 1000m
+  
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: gp3
+    accessMode: ReadWriteOnce
+  
+  auditStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: gp3
+    accessMode: ReadWriteOnce
+  
+  serviceAccount:
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::${AWS_ACCOUNT_ID}:role/vault-server
+  
+  extraEnvironmentVars:
+    VAULT_SEAL_TYPE: awskms
+    VAULT_AWSKMS_SEAL_KEY_ID: ${KMS_KEY_ARN}
+
+ui:
+  enabled: true
+  serviceType: ClusterIP
+  externalPort: 8200
+  targetPort: 8200
+
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+    interval: 30s
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 100
+  capabilities:
+    add:
+      - IPC_LOCK
+
+# Additional security configurations
+extraSecretEnvironmentVars:
+  - envName: AWS_REGION
+    secretName: vault-aws-config
+    secretKey: region
+
+# Affinity and anti-affinity rules for high availability
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - vault
+        topologyKey: kubernetes.io/hostname
+
+# Network policies for secure communication
+networkPolicy:
+  enabled: true
+  ingressRules:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: tald-unia-audio
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+
+# TLS configuration for secure communication
+tls:
+  enabled: true
+  serverName: vault.tald-unia.svc.cluster.local
+  certSecretName: vault-tls
+  caBundle: ${CA_BUNDLE}
+
+# Audit device configuration for security logging
+auditDevices:
+  file:
+    path: /vault/audit/audit.log
+    mode: 0600
+    format: json
+    prefix: vault-audit
+
+# Initialization and unseal configuration
+autoUnseal:
+  enabled: true
+  provider: awskms
+  config:
+    kmsKeyId: ${KMS_KEY_ARN}
+    region: ${AWS_REGION}
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 0 * * *"
+  storage:
+    storageClass: gp3
+    size: 20Gi
+    accessMode: ReadWriteOnce
