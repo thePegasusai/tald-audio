@@ -1,0 +1,170 @@
+# Prometheus Helm Values Configuration for TALD UNIA Audio System
+# Version: 15.18.0
+# Purpose: Comprehensive monitoring configuration for audio quality, system performance, and security metrics
+
+prometheus:
+  # Main Prometheus server configuration
+  server:
+    replicas: 2  # High availability setup
+    retention: 30d  # 30 days metrics retention
+    
+    persistentVolume:
+      enabled: true
+      size: 50Gi
+      storageClass: standard
+    
+    resources:
+      requests:
+        cpu: "1"
+        memory: 2Gi
+      limits:
+        cpu: "2"
+        memory: 4Gi
+    
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534  # nobody user
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault
+
+  # Service Monitors Configuration
+  serviceMonitors:
+    # Audio Quality Monitoring
+    audio:
+      enabled: true
+      selector:
+        matchLabels:
+          app: tald-unia-audio
+      endpoints:
+        - port: metrics
+          interval: 15s
+          path: /metrics
+          scrapeTimeout: 10s
+          metricRelabelings:
+            - sourceLabels: ["__name__"]
+              regex: "audio_(thd|snr|latency|power).*"
+              action: keep
+
+    # AI Processing Monitoring
+    ai:
+      enabled: true
+      selector:
+        matchLabels:
+          app: tald-unia-ai
+      endpoints:
+        - port: metrics
+          interval: 15s
+          path: /metrics
+          scrapeTimeout: 10s
+
+  # Alerting Rules Configuration
+  rules:
+    # Audio Quality Rules
+    audio_quality:
+      groups:
+        - name: audio.rules
+          rules:
+            - alert: HighTHD
+              expr: audio_thd_percentage > 0.0005
+              for: 5m
+              labels:
+                severity: warning
+              annotations:
+                description: "THD+N exceeds quality threshold of 0.0005%"
+            
+            - alert: LowSNR
+              expr: audio_snr_db < 120
+              for: 5m
+              labels:
+                severity: warning
+              annotations:
+                description: "SNR below required 120dB threshold"
+            
+            - alert: HighLatency
+              expr: audio_processing_latency_ms > 10
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                description: "Audio processing latency exceeds 10ms threshold"
+
+    # System Performance Rules
+    system_performance:
+      groups:
+        - name: system.rules
+          rules:
+            - alert: HighCPUUsage
+              expr: cpu_usage_percent > 40
+              for: 10m
+              labels:
+                severity: warning
+              annotations:
+                description: "CPU usage exceeds 40% threshold"
+            
+            - alert: HighMemoryUsage
+              expr: memory_usage_bytes / memory_total_bytes * 100 > 80
+              for: 10m
+              labels:
+                severity: warning
+              annotations:
+                description: "Memory usage exceeds 80% threshold"
+            
+            - alert: LowPowerEfficiency
+              expr: power_efficiency_percent < 90
+              for: 15m
+              labels:
+                severity: warning
+              annotations:
+                description: "Power efficiency below 90% threshold"
+
+  # Security Configuration
+  security:
+    serviceAccount:
+      create: true
+      annotations:
+        kubernetes.io/enforce-mountable-secrets: "true"
+      automountServiceAccountToken: false
+    
+    networkPolicy:
+      enabled: true
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app: grafana
+
+  # Additional Scrape Configurations
+  additionalScrapeConfigs:
+    - job_name: tald-unia-audio-core
+      metrics_path: /metrics
+      scheme: https
+      tls_config:
+        insecure_skip_verify: false
+      static_configs:
+        - targets:
+            - tald-unia-audio-core:9090
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          target_label: app
+        - source_labels: [__meta_kubernetes_pod_label_component]
+          target_label: component
+
+  # Storage Configuration
+  storage:
+    tsdb:
+      retention:
+        time: 30d
+        size: 50GB
+      wal:
+        retention:
+          time: 12h
+
+  # Global Configuration
+  global:
+    evaluation_interval: 15s
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    external_labels:
+      environment: production
+      cluster: tald-unia
