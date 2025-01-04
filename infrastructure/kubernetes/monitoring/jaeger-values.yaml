@@ -1,0 +1,121 @@
+# Jaeger Helm values configuration for TALD UNIA Audio System
+# Chart version: jaegertracing/jaeger 2.43.0
+
+jaeger:
+  # Production deployment strategy for high availability
+  strategy: production
+
+  # Collector configuration for trace ingestion
+  collector:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    samplingConfig:
+      default:
+        type: probabilistic
+        param: 1
+      audio_processing:
+        type: ratelimiting
+        param: 100
+      ai_inference:
+        type: probabilistic
+        param: 0.8
+      spatial_processing:
+        type: probabilistic
+        param: 0.9
+
+  # Query service configuration for trace visualization
+  query:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress-class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - jaeger.tald-unia.local
+      tls:
+        - secretName: jaeger-tls
+          hosts:
+            - jaeger.tald-unia.local
+
+  # Agent configuration for trace collection
+  agent:
+    strategy: daemonset
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+  # Storage configuration using Elasticsearch
+  storage:
+    type: elasticsearch
+    options:
+      es:
+        server-urls: https://elasticsearch-master:9200
+        username: ${ELASTIC_USER}
+        password: ${ELASTIC_PASSWORD}
+        tls:
+          enabled: true
+          skip-host-verify: true
+    retention: 7d
+
+  # Prometheus monitoring integration
+  monitoring:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 15s
+
+  # Security configuration
+  security:
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 1000
+    serviceAccount:
+      create: true
+      annotations:
+        kubernetes.io/enforce-mountable-secrets: "true"
+
+  # Tracing configuration for TALD UNIA components
+  tracingConfig:
+    audio_pipeline:
+      service: audio-processor
+      spans:
+        - dsp_processing
+        - ai_enhancement
+        - spatial_processing
+        - latency_measurement
+        - buffer_management
+    ai_pipeline:
+      service: ai-processor
+      spans:
+        - model_inference
+        - feature_extraction
+        - enhancement_processing
+        - model_performance
+        - inference_latency
+    spatial_pipeline:
+      service: spatial-processor
+      spans:
+        - hrtf_processing
+        - room_modeling
+        - head_tracking
+        - position_calculation
+        - spatial_rendering
