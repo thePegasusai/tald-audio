@@ -1,0 +1,108 @@
+# cert-manager Helm values configuration v1.13.0
+# Enhanced security configuration for TALD UNIA Audio System
+
+global:
+  leaderElection:
+    namespace: cert-manager
+  logLevel: 2
+  rbac:
+    create: true
+    clusterResourceNamespace: cert-manager-system
+
+# Install Custom Resource Definitions
+installCRDs: true
+
+# High availability configuration
+replicaCount: 3
+
+# Container image configuration
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  tag: v1.13.0
+  pullPolicy: IfNotPresent
+
+# Resource allocation for optimal performance
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+# Prometheus monitoring integration
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 25s
+    labels:
+      release: prometheus
+
+# Webhook configuration with HA
+webhook:
+  enabled: true
+  replicaCount: 3
+  timeoutSeconds: 10
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+    runAsNonRoot: true
+
+# CA injector configuration with HA
+cainjector:
+  enabled: true
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+# DNS configuration for certificate validation
+podDnsPolicy: ClusterFirst
+podDnsConfig:
+  nameservers:
+    - 8.8.8.8
+    - 8.8.4.4
+  options:
+    - name: ndots
+      value: "5"
+
+# Enhanced security arguments
+extraArgs:
+  - --dns01-recursive-nameservers=8.8.8.8:53,8.8.4.4:53
+  - --dns01-recursive-nameservers-only
+  - --enable-certificate-owner-ref=true
+  - --v=2
+
+# Security context configuration
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Service account configuration with AWS IAM integration
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::${AWS_ACCOUNT_ID}:role/cert-manager
+
+# Pod security policy configuration
+podSecurityPolicy:
+  enabled: true
+  useAppArmor: true
