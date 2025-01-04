@@ -1,0 +1,148 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+package-lock.json
+yarn.lock
+poetry.lock
+requirements.txt.lock
+vcpkg_installed/
+
+# Build outputs
+dist/
+build/
+out/
+cmake-build-*/
+Debug/
+Release/
+x64/
+x86/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.cu.o
+*.ptx
+
+# Environment and configuration
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+config.local.json
+credentials.json
+secrets.yaml
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+.settings/
+*.code-workspace
+.clion*/
+cmake-build-debug/
+cmake-build-release/
+
+# System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+.directory
+
+# Logs and debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+crash-reports/
+profiling_results/
+performance_logs/
+
+# Testing and coverage
+coverage/
+.nyc_output/
+junit.xml
+test-results.xml
+audio_test_results/
+benchmark_results/
+latency_tests/
+quality_metrics/
+
+# Audio files and processing
+*.wav
+*.mp3
+*.aac
+*.m4a
+*.ogg
+*.flac
+*.pcm
+*.raw
+test_samples/
+audio_samples/
+processed_audio/
+spatial_audio_cache/
+dsp_temp/
+eq_profiles/
+
+# AI and ML artifacts
+*.tflite
+*.pb
+*.pth
+*.onnx
+model_checkpoints/
+pretrained_models/
+training_cache/
+inference_cache/
+optimizer_states/
+neural_dsp_models/
+
+# Cache and temporary files
+.cache/
+.temp/
+tmp/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Container and deployment
+docker-compose.override.yml
+.docker/
+*.tar
+*.tar.gz
+container_temp/
+docker_build_cache/
+
+# Hardware configuration and data
+hardware_configs/
+device_profiles/
+calibration_data/
+hrtf_measurements/
+room_acoustics/
+
+# Platform-specific ignores
+# iOS and macOS specific patterns are in their respective .gitignore files
+# See: src/ios/.gitignore and src/macos/.gitignore
