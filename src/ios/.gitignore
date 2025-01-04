@@ -1,0 +1,50 @@
+*.xcuserstate
+xcuserdata/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.moved-aside
+*.hmap
+*.ipa
+*.xcarchive
+*.generated.swift
+
+# Build artifacts
+build/
+DerivedData/
+.build/
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code coverage
+coverage/
+
+# Debug and profiling
+timeline.xctimeline
+playground.xcworkspace
+
+# Environment and secrets
+.env
+
+# System files
+.DS_Store
+
+# Python build scripts
+*.pyc
