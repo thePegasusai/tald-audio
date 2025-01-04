@@ -1,0 +1,60 @@
+PODS:
+  - KeychainAccess (4.2.2)
+  - RxCocoa (6.6.0):
+    - RxRelay (= 6.6.0)
+    - RxSwift (= 6.6.0)
+  - RxRelay (6.6.0):
+    - RxSwift (= 6.6.0)
+  - RxSwift (6.6.0)
+  - Starscream (4.0.6)
+  - SwiftLint (0.54.0)
+  - SwiftNIO (2.62.0)
+  - SwiftProtobuf (1.25.0)
+  - TensorFlowLiteSwift (2.13.0):
+    - TensorFlowLiteC (= 2.13.0)
+  - TensorFlowLiteC (2.13.0)
+  - TensorFlowLiteSwiftMetalDelegate (2.13.0):
+    - TensorFlowLiteC (= 2.13.0)
+    - TensorFlowLiteSwift (= 2.13.0)
+
+DEPENDENCIES:
+  - KeychainAccess (~> 4.2.2)
+  - RxCocoa (~> 6.6.0)
+  - RxSwift (~> 6.6.0)
+  - Starscream (~> 4.0.6)
+  - SwiftLint (~> 0.54.0)
+  - SwiftNIO (~> 2.62.0)
+  - SwiftProtobuf (~> 1.25.0)
+  - TensorFlowLiteSwift (~> 2.13.0)
+  - TensorFlowLiteSwiftMetalDelegate (~> 2.13.0)
+
+SPEC REPOS:
+  trunk:
+    - KeychainAccess
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - Starscream
+    - SwiftLint
+    - SwiftNIO
+    - SwiftProtobuf
+    - TensorFlowLiteC
+    - TensorFlowLiteSwift
+    - TensorFlowLiteSwiftMetalDelegate
+
+SPEC CHECKSUMS:
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
+  RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
+  RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
+  RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
+  Starscream: fb2c4510bebf908c62bd383bcf05e673720e91ee
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
+  SwiftNIO: 79b5bd7614ad0eb41c7bb068a009e13731381e49
+  SwiftProtobuf: 7773c4e96a99d7b8ab7cda0fc30a883732ff93b1
+  TensorFlowLiteC: 8a8cb6fa5e1d10c8c11615e3502c788534e0e7b1
+  TensorFlowLiteSwift: 2dd5e9c895e1c0f1f6c54deace3bb3aa9f9c3836
+  TensorFlowLiteSwiftMetalDelegate: 14eefdb56d4c222c0fe7c6d6c61bd3fd5e0e314c
+
+PODFILE CHECKSUM: 7a9d4b3b2d97c8a8f1c8f3bc029e2f2a4c9e1234
+
+COCOAPODS: 1.14.3
