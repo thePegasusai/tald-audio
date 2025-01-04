@@ -1,0 +1,216 @@
+# Fastfile for TALD UNIA iOS Application
+# Version: fastlane 2.212.2
+# Requires: cocoapods-core 1.12.1, xcodeproj 1.22.0
+
+# Import app configuration from Appfile
+import_from_git(
+  url: "https://github.com/tald/fastlane-config.git",
+  branch: "main",
+  path: "fastlane/Appfile"
+)
+
+# Global configuration
+platform :ios do
+  WORKSPACE = "TALDUnia.xcworkspace"
+  SCHEME = "TALDUnia"
+  BUILD_CACHE_PATH = "~/Library/Caches/TALDUnia-builds"
+  COVERAGE_THRESHOLD = 80
+  
+  before_all do |lane, options|
+    # Verify environment and dependencies
+    ensure_bundle_exec
+    ensure_xcode_version(version: "14.3")
+    
+    # Setup build cache
+    FileUtils.mkdir_p(BUILD_CACHE_PATH)
+    clean_old_cache_entries(
+      cache_path: BUILD_CACHE_PATH,
+      days: 7
+    )
+    
+    # Verify certificates and provisioning
+    verify_xcode_signing
+    
+    # Configure parallel processing
+    ENV["FASTLANE_XCODEBUILD_PARALLEL_WORKERS"] = "8"
+    ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+    
+    # Initialize error tracking
+    setup_ci if is_ci
+  end
+
+  desc "Run comprehensive test suite"
+  lane :test do |options|
+    # Reset test environment
+    clear_derived_data
+    reset_simulator_contents
+
+    # Run unit tests in parallel
+    scan(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      parallel_testing: true,
+      concurrent_workers: 4,
+      code_coverage: true,
+      clean: true,
+      result_bundle: true,
+      output_directory: "test_output",
+      fail_build: true
+    )
+
+    # Validate test coverage
+    coverage = validate_coverage(
+      threshold: options[:coverage_threshold] || COVERAGE_THRESHOLD,
+      xcresult_path: "test_output/TALDUnia.xcresult"
+    )
+
+    # Run UI tests
+    run_tests(
+      workspace: WORKSPACE,
+      scheme: "#{SCHEME}UITests",
+      devices: ["iPhone 14 Pro", "iPad Pro (12.9-inch)"],
+      concurrent_simulators: true,
+      result_bundle: true,
+      retry_count: 2
+    )
+
+    # Upload test results
+    upload_test_results(
+      platform: "ios",
+      path: "test_output"
+    )
+  end
+
+  desc "Build app with optimizations"
+  lane :build do |options|
+    # Configure build settings
+    build_config = options[:configuration] || "Release"
+    
+    # Update certificates if needed
+    sync_code_signing(
+      type: "appstore",
+      readonly: is_ci,
+      force: false
+    )
+
+    # Clean if requested or cache invalid
+    if options[:clean] || !is_cache_valid?
+      clean_build_artifacts
+      clear_derived_data
+    end
+
+    # Build with optimizations
+    gym(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: build_config,
+      clean: options[:clean] || false,
+      export_method: "app-store",
+      xcargs: {
+        "COMPILER_INDEX_STORE_ENABLE": "NO",
+        "SWIFT_COMPILATION_MODE": "wholemodule"
+      },
+      export_options: {
+        compileBitcode: false,
+        stripSwiftSymbols: true
+      },
+      build_path: BUILD_CACHE_PATH,
+      output_directory: "builds",
+      include_symbols: true,
+      include_bitcode: false,
+      parallel_testing: true
+    )
+
+    # Validate build
+    validate_build(
+      path: lane_context[SharedValues::IPA_OUTPUT_PATH]
+    )
+  end
+
+  desc "Deploy to TestFlight with staged rollout"
+  lane :deploy_testflight do |options|
+    # Ensure tests passed
+    test
+    
+    # Build for TestFlight
+    build(configuration: "Release")
+
+    # Upload to TestFlight
+    pilot(
+      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
+      skip_waiting_for_build_processing: true,
+      distribute_external: true,
+      groups: options[:groups] || ["Internal Testers"],
+      notify_external_testers: true,
+      changelog: read_changelog,
+      beta_app_review_info: {
+        contact_email: "beta@tald.com",
+        contact_first_name: "TALD",
+        contact_last_name: "Beta",
+        contact_phone: "1234567890",
+        demo_account_name: "demo@tald.com",
+        demo_account_password: "demo123"
+      }
+    )
+
+    # Monitor deployment
+    monitor_testflight_build(
+      app_identifier: app_identifier,
+      version: get_version_number,
+      build_number: get_build_number
+    )
+  end
+
+  desc "Deploy to App Store with rollback support"
+  lane :deploy_appstore do |options|
+    # Verify release requirements
+    ensure_release_ready
+    
+    # Backup current version
+    backup_production_version
+
+    # Build for App Store
+    build(
+      configuration: "Release",
+      clean: true
+    )
+
+    # Perform security audit
+    perform_security_audit
+
+    # Upload to App Store
+    deliver(
+      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
+      skip_metadata: options[:skip_metadata] || false,
+      skip_screenshots: true,
+      force: true,
+      precheck_include_in_app_purchases: true,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: true,
+        export_compliance_is_exempt: false
+      }
+    )
+
+    # Update documentation
+    update_release_notes(
+      version: get_version_number,
+      build: get_build_number
+    )
+
+    # Notify stakeholders
+    notify_deployment_complete
+  end
+
+  error do |lane, exception, options|
+    # Handle errors and notify
+    notify_error(
+      exception: exception,
+      lane: lane,
+      options: options
+    )
+    
+    # Trigger rollback if needed
+    rollback_deployment if lane == :deploy_appstore
+  end
+end
