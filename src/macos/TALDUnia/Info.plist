@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Basic Application Information -->
+    <key>CFBundleIdentifier</key>
+    <string>com.tald.unia.macos</string>
+    <key>CFBundleName</key>
+    <string>TALD UNIA</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.music</string>
+
+    <!-- System Capabilities -->
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <true/>
+    <key>NSRequiresAquaSystemAppearance</key>
+    <false/>
+
+    <!-- Privacy Permissions -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>TALD UNIA requires microphone access for premium audio processing, room correction, and acoustic optimization</string>
+    <key>NSAudioEngineUsageDescription</key>
+    <string>TALD UNIA requires audio engine access for high-fidelity audio processing with THD+N &lt; 0.0005%</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>TALD UNIA uses speech recognition for voice control and audio environment optimization</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>TALD UNIA requires Bluetooth access for wireless audio devices and head tracking sensors</string>
+
+    <!-- Required Device Capabilities -->
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>accelerometer</string>
+        <string>metal</string>
+        <string>magnetometer</string>
+        <string>armv8</string>
+    </array>
+
+    <!-- Document Types -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Audio Profile</string>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>taldprofile</string>
+            </array>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>application/x-tald-profile</string>
+            </array>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleTypeIconFile</key>
+            <string>profile_icon</string>
+        </dict>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Audio Settings</string>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>taldsettings</string>
+            </array>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>application/x-tald-settings</string>
+            </array>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleTypeIconFile</key>
+            <string>settings_icon</string>
+        </dict>
+    </array>
+
+    <!-- Security Entitlements -->
+    <key>com.apple.security.audio</key>
+    <true/>
+    <key>com.apple.security.device.bluetooth</key>
+    <true/>
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+
+    <!-- Metal Performance -->
+    <key>MetalCaptureEnabled</key>
+    <true/>
+    <key>MetalValidationEnabled</key>
+    <true/>
+    <key>MetalPreferredDevice</key>
+    <string>discrete</string>
+
+    <!-- App Transport Security -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>tald.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <true/>
+                <key>NSExceptionMinimumTLSVersion</key>
+                <string>TLSv1.3</string>
+                <key>NSRequiresCertificateTransparency</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+</dict>
+</plist>
