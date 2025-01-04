@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    
+    <key>CFBundleDisplayName</key>
+    <string>TALD UNIA</string>
+    
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <false/>
+        <key>UISceneConfigurations</key>
+        <dict>
+            <key>UIWindowSceneSessionRoleApplication</key>
+            <array>
+                <dict>
+                    <key>UISceneConfigurationName</key>
+                    <string>Default Configuration</string>
+                    <key>UISceneDelegateClassName</key>
+                    <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+                </dict>
+            </array>
+        </dict>
+    </dict>
+    
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>audio</string>
+        <string>processing</string>
+        <string>external-accessory</string>
+    </array>
+    
+    <key>NSMicrophoneUsageDescription</key>
+    <string>TALD UNIA requires microphone access for high-precision room correction, spatial audio processing, and acoustic environment analysis to deliver optimal audio quality with THD+N &lt; 0.0005%</string>
+    
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>armv7</string>
+        <string>metal</string>
+        <string>accelerometer</string>
+        <string>bluetooth-le</string>
+    </array>
+    
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>TALD UNIA uses Bluetooth for connecting to external audio devices and accessories to ensure optimal audio processing and synchronization</string>
+    
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>TALD UNIA requires Bluetooth access to connect with audio devices and accessories for high-quality audio processing</string>
+    
+    <key>UIRequiresFullScreen</key>
+    <true/>
+    
+    <key>NSMotionUsageDescription</key>
+    <string>Motion data is used for spatial audio processing and head tracking to deliver immersive 3D audio experiences</string>
+    
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+</dict>
+</plist>
