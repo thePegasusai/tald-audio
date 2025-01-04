@@ -1,0 +1,89 @@
+# EditorConfig configuration for TALD UNIA Audio System
+# Version: 1.0.0
+# Maintains consistent coding styles across different editors and IDEs
+root = true
+
+# Default settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# TypeScript/JavaScript files
+[*.{ts,js,tsx,jsx}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# Swift files - iOS/macOS development
+[*.swift]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# C++ files - Audio processing core
+[*.{cpp,hpp,h,c}]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# YAML configuration files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON configuration files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown documentation
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Make files
+[Makefile]
+indent_style = tab
+
+# CMake files
+[CMakeLists.txt]
+indent_style = space
+indent_size = 2
+
+# Python files - AI processing
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+# Windows scripts
+[*.{cmd,bat}]
+end_of_line = crlf
+
+# Audio processing source files
+[*.{dsp,aup}]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Version control specific files
+[.git*]
+indent_style = tab
+end_of_line = lf
+
+# Build output and dependencies
+[{dist,build,node_modules}/**]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset
