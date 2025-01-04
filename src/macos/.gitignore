@@ -1,0 +1,73 @@
+# Xcode
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+
+# Build artifacts
+build/
+*.o
+*.linkFileList
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.metallib
+*.air
+*.app
+
+# Dependencies
+Pods/
+Carthage/Build/
+.swiftpm/
+Package.resolved
+vendor/
+*.framework
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# IDE files
+*.swp
+*.lock
+profile
+*.moved-aside
+Timeline.xctimeline
+playground.xcworkspace
+*.profraw
+*.trace
+*.instruments
+
+# Audio processing artifacts
+*.dat
+*.raw
+*.pcm
+*.wav
+*.aif
+*.aiff
+*.mp3
+*.m4a
+*.dsp
+*.neu
+test_samples/
+audio_cache/
+*.audiodata
+*.aupreset
+*.trainedmodel
