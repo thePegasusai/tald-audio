@@ -1,0 +1,86 @@
+// File Header (32 bytes)
+54 41 4C 44     // Magic bytes "TALD"
+00 00 00 01     // Version 1
+00 02 EE 00     // Sample rate: 192000 Hz
+00 00 00 20     // Bit depth: 32
+00 00 00 02     // Channels: 2
+00 00 00 00     // Frame count (64-bit)
+05 B8 D8 00     // Total frames: 6,000,000
+00 00 00 01     // Format: IEEE_FLOAT
+// SHA-256 checksum (32 bytes)
+A4 F2 E5 D7 C3 B1 89 4E 
+F6 D2 B8 9A 7C 5E 3F 1D 
+8B 4A 2E 1F 0D 9C 6B 3A 
+E2 C5 8F 4D 1B 0A 7E 2C
+C0 40 40 40     // Calibration level: -3.0 dBFS
+
+// Test Sample Section 1: Sine Sweep (20Hz-20kHz)
+// Duration: 5.0s, 960,000 frames
+// Left channel sweep data
+3C 12 83 A2     // Start of logarithmic sweep
+... [960,000 frames of sweep data]
+// Right channel sweep data (phase aligned)
+3C 12 83 A2     // Matching start of sweep
+... [960,000 frames of sweep data]
+
+// Test Sample Section 2: White Noise
+// Duration: 3.0s, 576,000 frames
+// Left channel white noise
+3F 12 45 B7     // Start of calibrated noise
+... [576,000 frames of noise data]
+// Right channel white noise
+3F 12 45 B7     // Matching start of noise
+... [576,000 frames of noise data]
+
+// Test Sample Section 3: Impulse Response
+// Duration: 1.0s, 192,000 frames
+// Left channel impulse
+3F 7F FF FF     // Impulse peak
+00 00 00 00     // Zero padding
+... [192,000 frames of impulse data]
+// Right channel impulse (100µs offset)
+00 00 00 00     // Initial delay
+3F 7F FF FF     // Delayed impulse peak
+... [192,000 frames of impulse data]
+
+// Test Sample Section 4: Reference Tones
+// Duration: 2.0s per tone, 768,000 frames total
+// 1kHz tone
+// Left channel
+3F 40 00 00     // 1kHz sine wave at -3dBFS
+... [384,000 frames of 1kHz data]
+// Right channel
+3F 40 00 00     // 1kHz sine wave at -3dBFS
+... [384,000 frames of 1kHz data]
+// 10kHz tone
+// Left channel
+3F 40 00 00     // 10kHz sine wave at -3dBFS
+... [384,000 frames of 10kHz data]
+// Right channel
+3F 40 00 00     // 10kHz sine wave at -3dBFS
+... [384,000 frames of 10kHz data]
+
+// Test Sample Section 5: Perceptual Reference
+// Duration: 10.0s per type, 5,760,000 frames total
+// Voice reference
+3E 91 A2 B3     // Start of voice reference
+... [1,920,000 frames of voice data]
+// Voice degraded
+3E 71 A2 B3     // Start of degraded voice
+... [1,920,000 frames of degraded voice data]
+// Music reference
+3E 82 C4 D5     // Start of music reference
+... [1,920,000 frames of music data]
+// Music degraded
+3E 62 C4 D5     // Start of degraded music
+... [1,920,000 frames of degraded music data]
+// Ambient reference
+3E 73 E5 F6     // Start of ambient reference
+... [1,920,000 frames of ambient data]
+// Ambient degraded
+3E 53 E5 F6     // Start of degraded ambient
+... [1,920,000 frames of degraded ambient data]
+
+// File termination marker
+54 41 4C 44     // "TALD" end marker
+FF FF FF FF     // EOF indicator
