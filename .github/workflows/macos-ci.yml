@@ -1,0 +1,159 @@
+name: macOS CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/macos/**'
+      - 'tests/**'
+      - 'hardware_sim/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/macos/**'
+      - 'tests/**'
+      - 'hardware_sim/**'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
+  DERIVED_DATA_PATH: ./DerivedData
+  HARDWARE_SIM_CONFIG: ./config/hardware_sim.json
+  MAX_RETRY_ATTEMPTS: 3
+  PARALLEL_WORKERS: 4
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+    timeout-minutes: 25
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+        fetch-depth: 0
+
+    - name: Setup Python for hardware simulation
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Setup Ruby environment
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+
+    - name: Cache CocoaPods
+      uses: actions/cache@v3
+      with:
+        path: |
+          Pods
+          ~/Library/Caches/CocoaPods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
+
+    - name: Cache Build
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.DERIVED_DATA_PATH }}
+        key: ${{ runner.os }}-build-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+
+    - name: Install Dependencies
+      run: |
+        pip install -r hardware_sim/requirements.txt
+        gem install cocoapods
+        pod install --repo-update
+        brew install swiftlint
+
+    - name: Setup Hardware Simulation
+      run: |
+        python hardware_sim/setup.py --config ${{ env.HARDWARE_SIM_CONFIG }}
+        python hardware_sim/validate.py --dac-model ESS9038PRO
+
+    - name: Run SwiftLint
+      run: |
+        swiftlint --strict --reporter github-actions-logging
+
+    - name: Build Application
+      run: |
+        xcodebuild clean build \
+          -workspace TALDUnia.xcworkspace \
+          -scheme TALDUnia \
+          -configuration Debug \
+          -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+          -parallelizeTargets \
+          -jobs ${{ env.PARALLEL_WORKERS }} \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty
+
+    - name: Run Unit Tests
+      run: |
+        xcodebuild test \
+          -workspace TALDUnia.xcworkspace \
+          -scheme TALDUniaTests \
+          -configuration Debug \
+          -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+          -enableCodeCoverage YES \
+          -parallel-testing-enabled YES \
+          -parallel-testing-worker-count ${{ env.PARALLEL_WORKERS }} \
+          | xcpretty
+
+    - name: Run Hardware Integration Tests
+      run: |
+        xcodebuild test \
+          -workspace TALDUnia.xcworkspace \
+          -scheme TALDUniaHardwareTests \
+          -configuration Debug \
+          -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+          -enableCodeCoverage YES \
+          HARDWARE_SIM_CONFIG=${{ env.HARDWARE_SIM_CONFIG }} \
+          | xcpretty
+
+    - name: Run Performance Tests
+      run: |
+        xcodebuild test \
+          -workspace TALDUnia.xcworkspace \
+          -scheme TALDUnia \
+          -configuration Release \
+          -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+          -only-testing:TALDUniaTests/AudioEngineTests/testProcessingLatency \
+          -only-testing:TALDUniaTests/AIEngineTests/testHardwareOptimizedPerformance \
+          | xcpretty
+
+    - name: Generate Code Coverage Report
+      run: |
+        xcrun xccov view --report --json \
+          ${{ env.DERIVED_DATA_PATH }}/Logs/Test/*.xcresult > coverage.json
+
+    - name: Upload Code Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.json
+        flags: macos
+        fail_ci_if_error: true
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          ${{ env.DERIVED_DATA_PATH }}/Logs/Test
+          coverage.json
+        retention-days: 14
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          ${{ env.DERIVED_DATA_PATH }}/Build/Products/Debug/TALDUnia.app
+          ${{ env.DERIVED_DATA_PATH }}/Logs/Build
+        retention-days: 14
