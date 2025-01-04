@@ -1,0 +1,15 @@
+# Appfile for TALD UNIA iOS app
+# Configuration for fastlane automation
+# Version: fastlane 2.217.0
+
+# App bundle identifier matching Info.plist CFBundleIdentifier
+app_identifier("com.tald.unia.ios")
+
+# Apple Developer account email for authentication
+apple_id("developer@tald.com")
+
+# Apple Developer Team ID for code signing (matches Xcode project DEVELOPMENT_TEAM)
+team_id("TALD123456")
+
+# App Store Connect Team ID for app distribution and TestFlight
+itc_team_id("TALD123456")
