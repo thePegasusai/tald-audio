@@ -1,0 +1,138 @@
+# SwiftLint configuration for TALD UNIA iOS Application
+# Version: 1.0
+# Purpose: Enforce consistent code quality and style standards across audio processing and AI components
+
+# Disabled rules that may interfere with audio/AI processing requirements
+disabled_rules:
+  - force_cast
+  - force_try
+  - line_length
+
+# Opt-in rules for enhanced code quality
+opt_in_rules:
+  - empty_count
+  - missing_docs
+  - closure_spacing
+  - explicit_init
+  - implicit_return
+  - unused_import
+  - unused_declaration
+  - performance_critical_annotation
+  - audio_buffer_validation
+  - ai_model_validation
+
+# Rule configurations
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+file_length:
+  warning: 400
+  error: 1000
+  ignore_comment_only_lines: true
+
+type_body_length:
+  warning: 300
+  error: 500
+
+function_body_length:
+  warning: 50
+  error: 100
+  ignore_comments: true
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+  ignores_case_statements: true
+
+type_name:
+  min_length: 3
+  max_length: 50
+  excluded:
+    - DSP
+    - FFT
+    - EQ
+
+identifier_name:
+  min_length: 2
+  max_length: 40
+  excluded:
+    - id
+    - x
+    - y
+    - z
+    - i
+    - j
+    - k
+    - db
+    - hz
+    - ms
+
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+
+trailing_whitespace:
+  ignores_empty_lines: true
+  ignores_comments: true
+
+# Excluded paths and files
+excluded:
+  - Pods
+  - TALDUniaTests
+  - TALDUniaUITests
+  - fastlane
+  - scripts
+  - "*.generated.swift"
+  - "**/DSP/Generated/*.swift"
+  - "**/AI/Models/*.mlmodel"
+
+# Reporter type
+reporter: "xcode"
+
+# Custom rules for TALD UNIA specific requirements
+custom_rules:
+  audio_processor_protocol:
+    name: "Audio Processor Protocol"
+    regex: "class.*AudioProcessor"
+    message: "Audio processors should implement AudioProcessing protocol"
+    severity: error
+
+  ai_model_versioning:
+    name: "AI Model Version Check"
+    regex: "AIModel.*init.*version"
+    message: "AI models must specify version in initialization"
+    severity: error
+
+  spatial_audio_config:
+    name: "Spatial Configuration"
+    regex: "SpatialProcessor.*configure"
+    message: "Spatial processors must call configure method"
+    severity: error
+
+  performance_critical:
+    name: "Performance Critical Annotation"
+    regex: "@performanceCritical"
+    message: "Performance critical methods must be documented and optimized"
+    severity: warning
+
+  buffer_overflow_check:
+    name: "Buffer Overflow Check"
+    regex: "audioBuffer\\[.*\\]"
+    message: "Audio buffer access must include bounds checking"
+    severity: error
+
+  realtime_processing:
+    name: "Realtime Processing Check"
+    regex: "@realtime"
+    message: "Realtime methods must avoid blocking operations"
+    severity: error
+
+  thread_safety:
+    name: "Thread Safety Check"
+    regex: "@threadSafe"
+    message: "Thread-safe components must use appropriate synchronization"
+    severity: error
