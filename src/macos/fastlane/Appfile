@@ -1,0 +1,13 @@
+# fastlane 2.217.0
+
+# The bundle identifier of your macOS application
+app_identifier("com.tald.unia.macos")
+
+# Your Apple Developer Portal email address
+apple_id("developer@tald.com")
+
+# Developer Portal Team ID
+team_id("TALD12345")
+
+# App Store Connect Team ID
+itc_team_id("TALD12345")
