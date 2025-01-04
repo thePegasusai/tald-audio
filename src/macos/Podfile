@@ -1,0 +1,35 @@
+platform :macos, '13.0'
+use_frameworks!
+inhibit_all_warnings!
+
+target 'TALDUnia' do
+  pod 'TensorFlowLiteSwift', '2.13.0'
+  pod 'TensorFlowLiteSwiftMetalDelegate', '2.13.0'
+  pod 'SwiftProtobuf', '1.25.0'
+  pod 'RxSwift', '6.6.0'
+  pod 'RxCocoa', '6.6.0'
+  pod 'SwiftNIO', '2.62.0'
+  pod 'Starscream', '4.0.6'
+  pod 'KeychainAccess', '4.2.2'
+  pod 'SwiftLint', '0.54.0'
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      config.build_settings['SWIFT_VERSION'] = '5.7'
+      config.build_settings['MTL_ENABLE_DEBUG_INFO'] = config.name == 'Debug' ? 'INCLUDE_SOURCE' : 'NO'
+      config.build_settings['ENABLE_TESTABILITY'] = config.name == 'Debug' ? 'YES' : 'NO'
+      config.build_settings['SWIFT_COMPILATION_MODE'] = config.name == 'Debug' ? 'singlefile' : 'wholemodule'
+      config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = config.name == 'Debug' ? '-Onone' : '-O'
+      config.build_settings['LLVM_LTO'] = config.name == 'Release' ? 'YES' : 'NO'
+      config.build_settings['GCC_OPTIMIZATION_LEVEL'] = config.name == 'Release' ? '3' : '0'
+      config.build_settings['METAL_ENABLE_DEBUG_INFO'] = config.name == 'Debug' ? 'YES' : 'NO'
+      config.build_settings['METAL_ENABLE_API_VALIDATION'] = config.name == 'Debug' ? 'YES' : 'NO'
+      config.build_settings['FRAMEWORK_SEARCH_PATHS'] = ['$(inherited)', '$(PLATFORM_DIR)/Developer/Library/Frameworks']
+      config.build_settings['DEBUG_INFORMATION_FORMAT'] = config.name == 'Debug' ? 'dwarf' : 'dwarf-with-dsym'
+    end
+  end
+end
