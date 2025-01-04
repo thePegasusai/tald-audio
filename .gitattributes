@@ -1,0 +1,60 @@
+# Default behavior: normalize line endings for all text files
+* text=auto
+
+# Audio Processing Files (binary)
+*.wav binary
+*.mp3 binary
+*.aac binary
+*.flac binary
+*.ogg binary
+*.tflite binary linguist-vendored=true
+*.onnx binary
+
+# Source Code Files
+*.cpp text eol=lf diff=cpp
+*.hpp text eol=lf diff=cpp
+*.c text eol=lf diff=cpp
+*.h text eol=lf diff=cpp
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.swift text eol=lf
+*.m text eol=lf
+*.mm text eol=lf
+
+# Build and Configuration Files
+CMakeLists.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+Makefile text eol=lf
+
+# Generated Code
+*.generated.cpp text eol=lf linguist-generated=true -diff
+*.generated.hpp text eol=lf linguist-generated=true -diff
+*.pb.cpp text eol=lf linguist-generated=true -diff
+*.pb.hpp text eol=lf linguist-generated=true -diff
+
+# Lock Files
+package-lock.json -diff
+
+# Documentation
+*.md text eol=lf
+*.txt text eol=lf
+*.pdf binary
+
+# IDE and Editor Files
+.editorconfig text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Scripts
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Container and Environment Files
+Dockerfile text eol=lf
+*.env text eol=lf
