@@ -1,0 +1,96 @@
+# MinIO Helm Chart Values Configuration
+# Chart Version: 12.6.4
+# Provides distributed object storage for AI models, audio samples and profile data
+
+minio:
+  # Deployment mode and scaling
+  mode: distributed
+  replicas: 4
+
+  # Storage configuration
+  persistence:
+    enabled: true
+    size: 100Gi
+    storageClass: standard
+
+  # Resource allocation
+  resources:
+    requests:
+      cpu: "1"
+      memory: 4Gi
+    limits:
+      cpu: "2" 
+      memory: 8Gi
+
+  # Authentication and security
+  auth:
+    rootUser: admin
+    existingSecret: minio-credentials
+
+  # Bucket configuration
+  buckets:
+    - name: ai-models
+      policy: none
+      purge: false
+    - name: audio-samples
+      policy: none
+      purge: false
+    - name: user-profiles
+      policy: none
+      purge: false
+
+  # Monitoring configuration
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: prometheus
+
+  # Security context and RBAC
+  security:
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+      annotations:
+        kubernetes.io/enforce-mountable-secrets: "true"
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      fsGroup: 1001
+
+  # Network policies
+  networkPolicy:
+    enabled: true
+    allowExternal: false
+    ingressNSMatchLabels:
+      kubernetes.io/metadata.name: tald-unia
+
+  # Ingress configuration
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress-class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - minio.tald-unia.local
+    tls:
+      - secretName: minio-tls
+        hosts:
+          - minio.tald-unia.local
+
+  # Health checks
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 20
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
