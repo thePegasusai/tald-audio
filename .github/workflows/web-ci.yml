@@ -1,0 +1,132 @@
+name: Web CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/web/**']
+  pull_request:
+    branches: [main]
+    paths: ['src/web/**']
+
+env:
+  NODE_VERSION: '18.x'
+  NPM_VERSION: '9.x'
+  WORKING_DIRECTORY: 'src/web'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/node_modules
+            ${{ env.WORKING_DIRECTORY }}/.eslintcache
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install -g npm@${{ env.NPM_VERSION }}
+          npm ci
+
+      - name: Lint code
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run lint
+        
+      - name: Type check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run typecheck
+
+      - name: Run unit tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run test:coverage
+        env:
+          NODE_ENV: test
+
+      - name: Run E2E tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run e2e
+        env:
+          NODE_ENV: test
+
+      - name: Performance validation
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm run build
+          node scripts/validate-performance.js
+        env:
+          CPU_THRESHOLD: 40
+          MEMORY_THRESHOLD: 1024
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/coverage
+            ${{ env.WORKING_DIRECTORY }}/cypress/coverage
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.WORKING_DIRECTORY }}/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install production dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install -g npm@${{ env.NPM_VERSION }}
+          npm ci --production
+
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
+        env:
+          NODE_ENV: production
+          VITE_APP_VERSION: ${{ github.sha }}
+
+      - name: Validate build artifacts
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          node scripts/validate-build.js
+          node scripts/check-bundle-size.js
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-build
+          path: ${{ env.WORKING_DIRECTORY }}/dist
