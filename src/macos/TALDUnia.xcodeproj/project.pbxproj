@@ -1,0 +1,261 @@
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		/* Core Application Files */
+		A1000001241FEABC00000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002241FEABC00000001 /* AppDelegate.swift */; };
+		A1000003241FEABC00000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000004241FEABC00000002 /* ContentView.swift */; };
+		
+		/* Audio Processing Files */
+		A1000005241FEABC00000003 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000006241FEABC00000003 /* AudioEngine.swift */; };
+		A1000007241FEABC00000004 /* DSPProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000008241FEABC00000004 /* DSPProcessor.swift */; };
+		
+		/* AI/ML Files */
+		A1000009241FEABC00000005 /* MLProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000010241FEABC00000005 /* MLProcessor.swift */; };
+		A1000011241FEABC00000006 /* AudioEnhancement.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1000012241FEABC00000006 /* AudioEnhancement.metal */; };
+		
+		/* Spatial Audio Files */
+		A1000013241FEABC00000007 /* SpatialProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000014241FEABC00000007 /* SpatialProcessor.swift */; };
+		
+		/* Resources */
+		A1000015241FEABC00000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000016241FEABC00000008 /* Assets.xcassets */; };
+		A1000017241FEABC00000009 /* AudioEnhancement.mlmodel in Resources */ = {isa = PBXBuildFile; fileRef = A1000018241FEABC00000009 /* AudioEnhancement.mlmodel */; };
+		
+		/* Frameworks */
+		A1000019241FEABC00000010 /* TensorFlowLiteSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A1000020241FEABC00000010 /* TensorFlowLiteSwift */; };
+		A1000021241FEABC00000011 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1000022241FEABC00000011 /* AudioKit */; };
+		A1000023241FEABC00000012 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1000024241FEABC00000012 /* SoundpipeAudioKit */; };
+		A1000025241FEABC00000013 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A1000026241FEABC00000013 /* RxSwift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		/* Core Application References */
+		A2000001241FEABC00000001 /* TALDUnia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TALDUnia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000002241FEABC00000002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2000003241FEABC00000003 /* TALDUnia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TALDUnia.entitlements; sourceTree = "<group>"; };
+		
+		/* Source Files References */
+		A2000004241FEABC00000004 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A2000005241FEABC00000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A2000006241FEABC00000006 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
+		A2000007241FEABC00000007 /* DSPProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSPProcessor.swift; sourceTree = "<group>"; };
+		A2000008241FEABC00000008 /* MLProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLProcessor.swift; sourceTree = "<group>"; };
+		A2000009241FEABC00000009 /* AudioEnhancement.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AudioEnhancement.metal; sourceTree = "<group>"; };
+		A2000010241FEABC00000010 /* SpatialProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialProcessor.swift; sourceTree = "<group>"; };
+		
+		/* Resource References */
+		A2000011241FEABC00000011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000012241FEABC00000012 /* AudioEnhancement.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AudioEnhancement.mlmodel; sourceTree = "<group>"; };
+		A2000013241FEABC00000013 /* TALDUnia-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TALDUnia-Bridging-Header.h"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A3000001241FEABC00000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000019241FEABC00000010 /* TensorFlowLiteSwift in Frameworks */,
+				A1000021241FEABC00000011 /* AudioKit in Frameworks */,
+				A1000023241FEABC00000012 /* SoundpipeAudioKit in Frameworks */,
+				A1000025241FEABC00000013 /* RxSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A4000001241FEABC00000001 = {
+			isa = PBXGroup;
+			children = (
+				A4000002241FEABC00000001 /* TALDUnia */,
+				A4000003241FEABC00000001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A4000002241FEABC00000001 /* TALDUnia */ = {
+			isa = PBXGroup;
+			children = (
+				A4000004241FEABC00000001 /* Core */,
+				A4000005241FEABC00000001 /* Audio */,
+				A4000006241FEABC00000001 /* AI */,
+				A4000007241FEABC00000001 /* Spatial */,
+				A4000008241FEABC00000001 /* UI */,
+				A4000009241FEABC00000001 /* Resources */,
+				A4000010241FEABC00000001 /* Supporting Files */,
+			);
+			path = TALDUnia;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A5000001241FEABC00000001 /* TALDUnia */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A5000002241FEABC00000001 /* Build configuration list for PBXNativeTarget "TALDUnia" */;
+			buildPhases = (
+				A5000003241FEABC00000001 /* Sources */,
+				A5000004241FEABC00000001 /* Frameworks */,
+				A5000005241FEABC00000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TALDUnia;
+			packageProductDependencies = (
+				A1000020241FEABC00000010 /* TensorFlowLiteSwift */,
+				A1000022241FEABC00000011 /* AudioKit */,
+				A1000024241FEABC00000012 /* SoundpipeAudioKit */,
+				A1000026241FEABC00000013 /* RxSwift */,
+			);
+			productName = TALDUnia;
+			productReference = A2000001241FEABC00000001 /* TALDUnia.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin XCBuildConfiguration section */
+		A6000001241FEABC00000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ML_ENABLED";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.7;
+			};
+			name = Debug;
+		};
+		A6000002241FEABC00000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.7;
+			};
+			name = Release;
+		};
+		A6000003241FEABC00000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TALDUnia/TALDUnia.entitlements;
+				DEVELOPMENT_TEAM = TALD_DEVELOPMENT_TEAM;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_ML_ACCELERATION = YES;
+				ENABLE_ML_PROFILING = YES;
+				ENABLE_AUDIO_VALIDATION = YES;
+				INFOPLIST_FILE = TALDUnia/Info.plist;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				METAL_LIBRARY_OUTPUT_DIR = "$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)";
+				MTL_COMPILER_FLAGS = "-ffast-math";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tald.unia.macos;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TALDUnia/Audio/DSP/TALDUnia-Bridging-Header.h";
+				SWIFT_VERSION = 5.7;
+			};
+			name = Debug;
+		};
+		A6000004241FEABC00000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TALDUnia/TALDUnia.entitlements;
+				DEVELOPMENT_TEAM = TALD_DEVELOPMENT_TEAM;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_ML_OPTIMIZATION = YES;
+				ENABLE_AUDIO_OPTIMIZATION = YES;
+				INFOPLIST_FILE = TALDUnia/Info.plist;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				METAL_FAST_MATH = YES;
+				METAL_LIBRARY_OUTPUT_DIR = "$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)";
+				MTL_COMPILER_FLAGS = "-ffast-math";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tald.unia.macos;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TALDUnia/Audio/DSP/TALDUnia-Bridging-Header.h";
+				SWIFT_VERSION = 5.7;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A7000001241FEABC00000001 /* Build configuration list for PBXProject "TALDUnia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6000001241FEABC00000001 /* Debug */,
+				A6000002241FEABC00000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A7000002241FEABC00000001 /* Build configuration list for PBXNativeTarget "TALDUnia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6000003241FEABC00000001 /* Debug */,
+				A6000004241FEABC00000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1000020241FEABC00000010 /* TensorFlowLiteSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = "TensorFlowLiteSwift";
+			version = 2.13.0;
+		};
+		A1000022241FEABC00000011 /* AudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = "AudioKit";
+			version = 5.6.0;
+		};
+		A1000024241FEABC00000012 /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = "SoundpipeAudioKit";
+			version = 5.6.0;
+		};
+		A1000026241FEABC00000013 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = "RxSwift";
+			version = 6.5.0;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A8000001241FEABC00000001 /* Project object */;
+}
