@@ -1,0 +1,62 @@
+PODS:
+  - Realm (10.41.0):
+    - Realm/Headers (= 10.41.0)
+  - Realm/Headers (10.41.0)
+  - RealmSwift (10.41.0):
+    - Realm (= 10.41.0)
+  - RxBlocking (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxCocoa (6.5.0):
+    - RxRelay (= 6.5.0)
+    - RxSwift (= 6.5.0)
+  - RxRelay (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxSwift (6.5.0)
+  - RxTest (6.5.0):
+    - RxSwift (= 6.5.0)
+  - Starscream (4.0.4)
+  - SwiftyBeaver (1.9.5)
+  - TensorFlowLiteSwift (2.13.0):
+    - TensorFlowLiteC (= 2.13.0)
+  - TensorFlowLiteC (2.13.0)
+
+DEPENDENCIES:
+  - RealmSwift (= 10.41.0)
+  - RxBlocking (= 6.5.0)
+  - RxCocoa (= 6.5.0)
+  - RxSwift (= 6.5.0)
+  - RxTest (= 6.5.0)
+  - Starscream (= 4.0.4)
+  - SwiftyBeaver (= 1.9.5)
+  - TensorFlowLiteSwift (= 2.13.0)
+
+SPEC REPOS:
+  trunk:
+    - Realm
+    - RealmSwift
+    - RxBlocking
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - RxTest
+    - Starscream
+    - SwiftyBeaver
+    - TensorFlowLiteC
+    - TensorFlowLiteSwift
+
+SPEC CHECKSUMS:
+  Realm: 7a3d3c92f08d40db2160311a5de449219f720e95
+  RealmSwift: 8a69a1cb788cd5865966683348b717928e64e7d1
+  RxBlocking: 04b5fd28bb5ea49a17ac5204214f11fc921f1f54
+  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
+  RxTest: eb2d23adefc5a5ebf5779c7792fa3edfe6ebcc17
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  SwiftyBeaver: 84069991dd5dca07d7069100985badaca7f0ce82
+  TensorFlowLiteC: 8a8cb6fa5e1d10c8c0210c616d90cd54c9bdc16f
+  TensorFlowLiteSwift: 1a5cd776f7c067a4419cbe32a26480e3cc4f4f44
+
+PODFILE CHECKSUM: 7f2d8e4b9605a3b8e3f9c3c4f9d5e8a1b2c7d3e9
+
+COCOAPODS: 1.12.1
