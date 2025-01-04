@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tald-backend
+  namespace: tald-unia
+  labels:
+    app: tald-backend
+    component: api
+    version: latest
+    part-of: tald-unia
+    managed-by: kubectl
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+    security.policy/version: "v1.0"
+    deployment.kubernetes.io/revision: "1"
+
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  
+  selector:
+    matchLabels:
+      app: tald-backend
+  
+  template:
+    metadata:
+      labels:
+        app: tald-backend
+        security.context: restricted
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        checksum/config: ${CONFIG_CHECKSUM}
+        checksum/secret: ${SECRET_CHECKSUM}
+    
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      
+      containers:
+      - name: tald-backend
+        image: tald-unia/backend:latest
+        imagePullPolicy: Always
+        
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        - name: websocket
+          containerPort: 8080
+          protocol: TCP
+        - name: metrics
+          containerPort: 9090
+          protocol: TCP
+        
+        resources:
+          requests:
+            cpu: "2"
+            memory: "4Gi"
+            ephemeral-storage: "1Gi"
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+            ephemeral-storage: "2Gi"
+        
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+            httpHeaders:
+            - name: Custom-Header
+              value: Health-Check
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+        
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 30
+        
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/tald/config
+          readOnly: true
+        - name: secrets-volume
+          mountPath: /etc/tald/secrets
+          readOnly: true
+        - name: models-volume
+          mountPath: /opt/tald-unia/models
+          readOnly: true
+        - name: tmp-volume
+          mountPath: /tmp
+          readOnly: false
+        
+        envFrom:
+        - configMapRef:
+            name: tald-unia-backend-config
+            optional: false
+        - secretRef:
+            name: tald-backend-secrets
+            optional: false
+        
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+      
+      volumes:
+      - name: config-volume
+        configMap:
+          name: tald-unia-backend-config
+      - name: secrets-volume
+        secret:
+          secretName: tald-backend-secrets
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: tald-models-pvc
+      - name: tmp-volume
+        emptyDir: {}
+      
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: tald-backend-sa
+      automountServiceAccountToken: true
