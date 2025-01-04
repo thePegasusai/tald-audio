@@ -1,0 +1,82 @@
+# Matchfile for TALD UNIA iOS app
+# Configuration for secure code signing certificate and profile management
+# Version: fastlane-plugin-match 2.217.0
+
+# Import app identifier and team ID from Appfile
+require_relative 'Appfile'
+
+# Git repository URL for storing encrypted certificates
+git_url("git@github.com:tald/certificates.git")
+
+# Use git storage mode for version control and audit trail
+storage_mode("git")
+
+# Certificate type (development, appstore, adhoc, enterprise)
+type("development")
+
+# Target platform
+platform("ios")
+
+# Prevent modifications to certificates/profiles
+readonly(true)
+
+# Generate Apple certificates if missing
+generate_apple_certs(true)
+
+# Path to App Store Connect API key for authentication
+api_key_path("~/path/to/api_key.json")
+
+# Basic auth for private git repository access
+git_basic_authorization(ENV['MATCH_GIT_BASIC_AUTHORIZATION'])
+
+# Enable verbose logging for compliance monitoring
+verbose(true)
+
+# Allow new device registration
+force_for_new_devices(true)
+
+# App identifiers for certificate matching
+def app_identifier
+  [
+    # Main app bundle ID from Appfile
+    CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+    # Associated app identifiers (extensions, widgets etc)
+    "com.tald.unia.ios.widget",
+    "com.tald.unia.ios.extension"
+  ]
+end
+
+# Apple Developer account username with fallback options
+def username
+  # Prefer API key authentication
+  return nil if api_key_path
+  
+  # Fallback to environment variable
+  ENV['MATCH_USERNAME'] || 
+    # Fallback to Appfile configuration  
+    CredentialsManager::AppfileConfig.try_fetch_value(:apple_id)
+end
+
+# Enhanced security controls
+ENV["MATCH_PASSWORD"] = ENV["MATCH_GIT_PRIVATE_KEY"]
+ENV["MATCH_KEYCHAIN_PASSWORD"] = ENV["MATCH_PASSWORD"]
+
+# Additional security settings
+{
+  git_branch: "main",
+  shallow_clone: false,
+  clone_branch_directly: false,
+  skip_confirmation: false,
+  skip_docs: false,
+  app_identifier: app_identifier,
+  username: username,
+  team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
+  storage_mode: storage_mode,
+  git_url: git_url,
+  type: type,
+  platform: platform,
+  readonly: readonly,
+  api_key_path: api_key_path,
+  verbose: verbose,
+  force_for_new_devices: force_for_new_devices
+}
