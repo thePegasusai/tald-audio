@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        NODE_ENV: development
+        BUILD_MODE: development
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - node_modules:/app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_WEBSOCKET_URL=ws://localhost:3000
+      - VITE_AUDIO_BUFFER_SIZE=2048
+      - VITE_AUDIO_SAMPLE_RATE=48000
+      - VITE_AUDIO_BIT_DEPTH=32
+      - NODE_ENV=development
+      - DEBUG=tald-unia:*
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - tald-unia-network
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  tald-unia-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  node_modules:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./node_modules
+      o: bind
+
+configs:
+  nginx_config:
+    file: ./nginx.conf
