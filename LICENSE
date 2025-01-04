@@ -1,0 +1,110 @@
+TALD UNIA AUDIO SYSTEM PROPRIETARY LICENSE
+Version 1.0, 2024
+
+Copyright © 2024 TALD UNIA. All Rights Reserved.
+
+1. DEFINITIONS
+
+"Software" refers to the TALD UNIA Audio System, including all source code, binary executables, audio processing algorithms, AI models, hardware integration specifications, documentation, and associated materials.
+
+"AI Models" refers to all machine learning models, neural networks, and artificial intelligence components developed for audio enhancement and processing.
+
+"Hardware Integration" refers to all specifications, protocols, and interfaces for integrating with audio hardware components.
+
+"Audio Algorithms" refers to all proprietary digital signal processing and audio enhancement algorithms.
+
+2. GRANT OF LICENSE
+
+Subject to the terms and conditions of this License, TALD UNIA grants you a limited, non-exclusive, non-transferable license to:
+
+a) Install and use the Software on authorized devices
+b) Access and utilize the AI-enhanced audio processing capabilities
+c) Integrate with approved hardware components
+d) Utilize the audio processing algorithms within the specified parameters
+
+3. RESTRICTIONS
+
+You may not:
+
+a) Modify, reverse engineer, decompile, or disassemble the Software
+b) Extract, isolate, or separate the AI models from the Software
+c) Copy or reproduce the audio processing algorithms
+d) Create derivative works based on the Hardware Integration specifications
+e) Remove or modify any proprietary notices or labels
+f) Transfer, lease, rent, or sublicense the Software
+g) Use the Software in violation of applicable laws or regulations
+
+4. INTELLECTUAL PROPERTY RIGHTS
+
+All rights, title, and interest in and to the Software, including:
+
+a) AI Models and training methodologies
+b) Audio processing algorithms and implementations
+c) Hardware integration specifications and protocols
+d) Patents, pending patents, and patent applications
+e) Trademarks and trade secrets
+f) Copyrights and moral rights
+
+remain the exclusive property of TALD UNIA.
+
+5. AI MODEL TERMS
+
+The AI models are protected by:
+
+a) Algorithmic patents and trade secrets
+b) Model architecture copyright
+c) Training methodology protection
+d) Inference implementation restrictions
+
+6. HARDWARE INTEGRATION TERMS
+
+Hardware integration is subject to:
+
+a) Interface protocol protection
+b) Implementation specifications confidentiality
+c) Performance optimization restrictions
+d) Compatibility requirements compliance
+
+7. AUDIO ALGORITHM TERMS
+
+Audio processing algorithms are protected by:
+
+a) Implementation patents
+b) Signal processing methodologies
+c) Enhancement technique trade secrets
+d) Quality optimization protocols
+
+8. COMPLIANCE
+
+Users must comply with:
+
+a) IEC 60065 for Audio Safety
+b) EN 50332 for Volume Limiting
+c) ISO/IEC 23008-3 for 3D Audio
+d) HDCP 2.3 for Content Protection
+
+9. WARRANTY DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+
+10. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL TALD UNIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES.
+
+11. TERMINATION
+
+This License terminates automatically if you fail to comply with its terms and conditions.
+
+12. GOVERNING LAW
+
+This License shall be governed by and construed in accordance with the laws of [Jurisdiction], without regard to its conflict of law provisions.
+
+13. ENTIRE AGREEMENT
+
+This License constitutes the entire agreement between the parties concerning the subject matter hereof.
+
+For licensing inquiries, contact:
+TALD UNIA Licensing Department
+[Contact Information]
+
+CONFIDENTIAL AND PROPRIETARY
