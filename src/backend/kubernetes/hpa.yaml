@@ -1,0 +1,67 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tald-unia-backend-hpa
+  namespace: tald-unia
+  labels:
+    app: tald-backend
+    component: autoscaling
+    part-of: tald-unia
+    managed-by: kubernetes
+  annotations:
+    description: "HPA for TALD UNIA backend audio processing"
+    scaling-policy: "performance-optimized"
+
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tald-backend
+  
+  minReplicas: 3
+  maxReplicas: 10
+  
+  metrics:
+    # CPU-based scaling
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    
+    # Memory-based scaling
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+    
+    # Custom metric for audio processing latency
+    - type: Pods
+      pods:
+        metric:
+          name: audio_processing_latency
+        target:
+          type: AverageValue
+          averageValue: "10ms"
+  
+  behavior:
+    # Scale up behavior
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+      selectPolicy: Max
+    
+    # Scale down behavior
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120
+      selectPolicy: Min
