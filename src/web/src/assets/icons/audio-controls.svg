@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Common styles and definitions -->
+  <defs>
+    <style>
+      .audio-control {
+        fill: currentColor;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+      .audio-control:hover {
+        opacity: 0.8;
+      }
+      .audio-control:active {
+        transform: scale(0.95);
+      }
+    </style>
+  </defs>
+
+  <!-- Play button -->
+  <symbol id="play" viewBox="0 0 24 24" role="img" aria-label="Play audio track" focusable="true">
+    <title>Play</title>
+    <path class="audio-control" d="M8 5v14l11-7z"/>
+  </symbol>
+
+  <!-- Pause button -->
+  <symbol id="pause" viewBox="0 0 24 24" role="img" aria-label="Pause audio playback" focusable="true">
+    <title>Pause</title>
+    <path class="audio-control" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+  </symbol>
+
+  <!-- Stop button -->
+  <symbol id="stop" viewBox="0 0 24 24" role="img" aria-label="Stop audio playback" focusable="true">
+    <title>Stop</title>
+    <path class="audio-control" d="M6 6h12v12H6z"/>
+  </symbol>
+
+  <!-- Volume control -->
+  <symbol id="volume" viewBox="0 0 24 24" role="img" aria-label="Adjust audio volume" focusable="true">
+    <title>Volume</title>
+    <path class="audio-control" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+  </symbol>
+
+  <!-- Fallback PNG data - Base64 encoded for older browsers -->
+  <image id="fallback" style="display: none;">
+    <desc>Fallback image for browsers not supporting SVG</desc>
+  </image>
+</svg>
