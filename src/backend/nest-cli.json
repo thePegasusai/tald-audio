@@ -1,0 +1,21 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": false,
+    "tsConfigPath": "tsconfig.build.json",
+    "assets": [
+      "**/*.proto",
+      "**/*.json",
+      "**/audio-models/*.bin",
+      "**/dsp-configs/*.json",
+      "**/spatial-presets/*.json"
+    ],
+    "watchAssets": true
+  },
+  "generateOptions": {
+    "spec": true,
+    "flat": false
+  }
+}
