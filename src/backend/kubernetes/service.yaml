@@ -1,0 +1,60 @@
+# Kubernetes Service resource for TALD UNIA Audio System backend
+# Version: v1
+# Purpose: Define network access configuration for backend services
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tald-unia-backend-service
+  namespace: tald-unia
+  labels:
+    app: tald-backend
+    component: service
+    tier: backend
+    environment: production
+  annotations:
+    # Prometheus monitoring configuration
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+    
+    # AWS Load Balancer configurations
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "60"
+
+spec:
+  type: ClusterIP
+  ports:
+    # HTTP API endpoint
+    - name: http-api
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+      appProtocol: http
+
+    # WebSocket endpoint for real-time audio streaming
+    - name: websocket
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+      appProtocol: websocket
+
+    # Prometheus metrics endpoint
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+      appProtocol: http
+
+  # Pod selector for service targeting
+  selector:
+    app: tald-backend
+    component: api
+
+  # Session affinity configuration for persistent connections
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3-hour session timeout
