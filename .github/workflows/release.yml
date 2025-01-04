@@ -1,0 +1,190 @@
+name: Release Management
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  DOCKER_REGISTRY: ghcr.io
+  AUDIO_QUALITY_THRESHOLD: 0.0005
+  THD_N_THRESHOLD: 0.0005
+  LATENCY_THRESHOLD: 10
+  NODE_VERSION: '18.x'
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Validate CHANGELOG
+        run: |
+          if ! grep -q "## \[${{ steps.get_version.outputs.version }}\]" CHANGELOG.md; then
+            echo "Error: Version ${{ steps.get_version.outputs.version }} not found in CHANGELOG.md"
+            exit 1
+          fi
+
+  backend:
+    name: Backend Release
+    needs: prepare
+    uses: ./.github/workflows/backend-ci.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+    secrets: inherit
+
+  ios:
+    name: iOS Release
+    needs: prepare
+    uses: ./.github/workflows/ios-ci.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+    secrets: inherit
+
+  macos:
+    name: macOS Release
+    needs: prepare
+    uses: ./.github/workflows/macos-ci.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+    secrets: inherit
+
+  web:
+    name: Web Release
+    needs: prepare
+    uses: ./.github/workflows/web-ci.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+    secrets: inherit
+
+  create-release:
+    name: Create Release
+    needs: [prepare, backend, ios, macos, web]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Validate audio quality
+        run: |
+          python scripts/validate-audio-quality.py \
+            --thd-threshold ${{ env.THD_N_THRESHOLD }} \
+            --latency-threshold ${{ env.LATENCY_THRESHOLD }} \
+            --artifacts-dir artifacts
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          VERSION=${{ needs.prepare.outputs.version }}
+          NOTES=$(awk "/## \[$VERSION\]/,/## \[/" CHANGELOG.md | head -n -1)
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          release_name: Release v${{ needs.prepare.outputs.version }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
+
+      - name: Upload backend artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/backend/tald-unia-backend.tar.gz
+          asset_name: tald-unia-backend-${{ needs.prepare.outputs.version }}.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload iOS artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/ios/TALDUnia.ipa
+          asset_name: TALDUnia-iOS-${{ needs.prepare.outputs.version }}.ipa
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/macos/TALDUnia.app.zip
+          asset_name: TALDUnia-macOS-${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload web artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/web/dist.zip
+          asset_name: tald-unia-web-${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+  deploy:
+    name: Deploy Release
+    needs: [prepare, create-release]
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to production
+        run: |
+          aws deploy create-deployment \
+            --application-name tald-unia \
+            --deployment-group-name production \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+
+      - name: Monitor deployment
+        run: |
+          python scripts/monitor-deployment.py \
+            --version ${{ needs.prepare.outputs.version }} \
+            --timeout 1800
+
+      - name: Notify deployment status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
