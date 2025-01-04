@@ -1,0 +1,123 @@
+name: TALD UNIA iOS CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/ios/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/ios/**'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.0.app/Contents/Developer
+  WORKSPACE: TALDUnia.xcworkspace
+  SCHEME: TALDUnia
+  AUDIO_QUALITY_THRESHOLD: 0.0005
+  LATENCY_THRESHOLD_MS: 10
+  PARALLEL_TESTING: true
+
+jobs:
+  audio-validation:
+    name: Audio Processing Validation
+    runs-on: macos-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby environment
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '3.2.0'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            Pods
+            vendor/bundle
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-audio-${{ hashFiles('**/Podfile.lock', '**/Gemfile.lock', 'src/ios/audio/**') }}
+          restore-keys: |
+            ${{ runner.os }}-audio-
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+          bundle exec pod install
+
+      - name: Setup test environment
+        run: |
+          chmod +x src/ios/scripts/bootstrap.sh
+          ./src/ios/scripts/bootstrap.sh
+          source src/ios/scripts/bootstrap.sh
+          check_prerequisites
+          setup_cocoapods
+          validate_hardware_simulation
+
+      - name: Run audio quality tests
+        run: |
+          chmod +x src/ios/scripts/test.sh
+          ./src/ios/scripts/test.sh
+        env:
+          AUDIO_QUALITY_THRESHOLD: ${{ env.AUDIO_QUALITY_THRESHOLD }}
+          LATENCY_THRESHOLD_MS: ${{ env.LATENCY_THRESHOLD_MS }}
+
+      - name: Run performance tests
+        run: |
+          xcodebuild test \
+            -workspace ${{ env.WORKSPACE }} \
+            -scheme ${{ env.SCHEME }} \
+            -destination 'platform=iOS Simulator,name=iPhone 14 Pro' \
+            -only-testing:TALDUniaTests/AudioEngineTests/testProcessingLatency \
+            -only-testing:TALDUniaTests/AudioEngineTests/testPowerEfficiency \
+            -enableCodeCoverage YES \
+            | xcpretty
+
+      - name: Run AI model validation
+        run: |
+          xcodebuild test \
+            -workspace ${{ env.WORKSPACE }} \
+            -scheme ${{ env.SCHEME }} \
+            -destination 'platform=iOS Simulator,name=iPhone 14 Pro' \
+            -only-testing:TALDUniaTests/AIEngineTests \
+            -enableCodeCoverage YES \
+            | xcpretty
+
+      - name: Build production release
+        run: |
+          chmod +x src/ios/scripts/build.sh
+          ./src/ios/scripts/build.sh
+        env:
+          CONFIGURATION: Release
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: |
+            test-results/audio
+            test-results/performance
+          retention-days: 14
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: TALDUnia-iOS
+          path: build/TALDUnia.ipa
+          retention-days: 30
+
+      - name: Post test summary
+        if: always()
+        run: |
+          echo "Audio Quality Tests Summary:"
+          echo "- THD+N: $(cat test-results/audio/thdn.txt)"
+          echo "- Latency: $(cat test-results/audio/latency.txt)ms"
+          echo "- Power Efficiency: $(cat test-results/audio/efficiency.txt)%"
