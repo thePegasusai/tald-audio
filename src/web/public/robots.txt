@@ -1,0 +1,69 @@
+# TALD UNIA Audio System Web Interface
+# Crawler Access Control Configuration
+# Last Updated: 2024
+# Review Frequency: Monthly
+
+# Default rules for all crawlers
+User-agent: *
+
+# Protect API endpoints and system interfaces
+Disallow: /api/
+Disallow: /api/v1/
+Disallow: /api/audio/
+Disallow: /api/profiles/
+Disallow: /api/settings/
+
+# Protect audio processing and streaming
+Disallow: /audio/
+Disallow: /audio/process/
+Disallow: /audio/stream/
+Disallow: /audio/analyze/
+
+# Protect user data and profiles
+Disallow: /profiles/
+Disallow: /profiles/*/settings
+Disallow: /profiles/*/data
+
+# Protect system settings and configuration
+Disallow: /settings/
+Disallow: /settings/audio/
+Disallow: /settings/system/
+
+# Protect AI and spatial processing endpoints
+Disallow: /ai/
+Disallow: /ai/models/
+Disallow: /ai/process/
+Disallow: /spatial/
+Disallow: /spatial/tracking/
+Disallow: /spatial/hrtf/
+
+# Protect authentication and user management
+Disallow: /auth/
+Disallow: /login/
+Disallow: /register/
+Disallow: /user/
+
+# Protect real-time processing endpoints
+Disallow: /realtime/
+Disallow: /websocket/
+Disallow: /stream/
+
+# Allow public content for SEO
+Allow: /
+Allow: /assets/
+Allow: /assets/images/
+Allow: /assets/fonts/
+Allow: /assets/styles/
+Allow: /docs/
+Allow: /docs/public/
+Allow: /about/
+Allow: /contact/
+Allow: /sitemap.xml
+Allow: /favicon.ico
+Allow: /robots.txt
+
+# Crawl-delay to prevent server overload
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://unia.tald.com/sitemap.xml
