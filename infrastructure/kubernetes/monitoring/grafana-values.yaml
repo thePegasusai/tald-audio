@@ -1,0 +1,177 @@
+# Grafana Helm Chart Values (grafana/grafana v6.50.7)
+# Configuration for TALD UNIA Audio System monitoring
+
+grafana:
+  replicas: 2
+  
+  image:
+    repository: grafana/grafana
+    tag: "9.5.2"
+    pullPolicy: IfNotPresent
+
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: standard
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus-server:9090
+          access: proxy
+          isDefault: true
+        - name: Jaeger
+          type: jaeger
+          url: http://jaeger-query:16686
+          access: proxy
+        - name: Elasticsearch
+          type: elasticsearch
+          url: https://elasticsearch-master:9200
+          access: proxy
+          database: "[jaeger-]*"
+          jsonData:
+            esVersion: "7.10.0"
+            timeField: "@timestamp"
+            tlsSkipVerify: true
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: true
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards
+
+  dashboards:
+    default:
+      audio-metrics:
+        json: |
+          {
+            "title": "Audio Processing Metrics",
+            "panels": [
+              {
+                "title": "THD Analysis",
+                "type": "graph",
+                "targets": [
+                  { "expr": "audio_thd_percentage" },
+                  { "expr": "audio_snr_db" }
+                ]
+              },
+              {
+                "title": "Processing Latency",
+                "type": "gauge",
+                "targets": [
+                  { "expr": "audio_processing_latency_ms" }
+                ]
+              },
+              {
+                "title": "Power Efficiency",
+                "type": "stat",
+                "targets": [
+                  { "expr": "power_efficiency_percent" }
+                ]
+              }
+            ]
+          }
+      system-performance:
+        json: |
+          {
+            "title": "System Performance",
+            "panels": [
+              {
+                "title": "CPU Usage",
+                "type": "graph",
+                "targets": [
+                  { "expr": "cpu_usage_percent" },
+                  { "expr": "memory_usage_percent" }
+                ]
+              },
+              {
+                "title": "AI Processing Load",
+                "type": "graph",
+                "targets": [
+                  { "expr": "ai_inference_time_ms" },
+                  { "expr": "model_accuracy_percent" }
+                ]
+              }
+            ]
+          }
+      security-monitoring:
+        json: |
+          {
+            "title": "Security Analytics",
+            "panels": [
+              {
+                "title": "Authentication Events",
+                "type": "table",
+                "targets": [
+                  { "expr": "auth_success_count" },
+                  { "expr": "auth_failure_count" }
+                ]
+              },
+              {
+                "title": "System Access",
+                "type": "heatmap",
+                "targets": [
+                  { "expr": "api_requests_total" },
+                  { "expr": "error_rate_percent" }
+                ]
+              }
+            ]
+          }
+
+  alerting:
+    enabled: true
+    rules:
+      - name: High THD Alert
+        condition: "audio_thd_percentage > 0.0005"
+        duration: 5m
+        severity: warning
+      - name: High Latency Alert
+        condition: "audio_processing_latency_ms > 10"
+        duration: 5m
+        severity: warning
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress-class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.tald-unia.local
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.tald-unia.local
+
+  security:
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 472
+      fsGroup: 472
+    serviceAccount:
+      create: true
+      annotations:
+        kubernetes.io/enforce-mountable-secrets: "true"
+
+  monitoring:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 15s
