@@ -1,0 +1,133 @@
+# TALD UNIA Audio System
+# Danger configuration file for automated code review
+# Version: 1.0.0
+
+# Import required Danger plugins
+require 'danger'
+require 'danger-swiftlint'  # @version 0.33.0
+require 'danger-junit'      # @version 1.0.0
+require 'danger-xcov'       # @version 0.5.0
+
+# Global constants
+SWIFTLINT_CONFIG_FILE = "swiftlint.yml"
+TEST_RESULTS_PATH = "build/test-results"
+COVERAGE_THRESHOLD = 85
+AUDIO_PERFORMANCE_THRESHOLD = "10ms"
+AI_MODEL_VERSION = "2.0.0"
+
+# Check PR size and complexity
+def check_pr_size
+  # Warn on large PRs
+  warn("Large PR - consider splitting into smaller PRs") if git.lines_of_code > 500
+
+  # Special handling for audio processing changes
+  audio_files = git.modified_files.select { |file| file.include?("Audio") || file.include?("DSP") }
+  if audio_files.any?
+    warn("Audio processing changes detected - ensure performance tests pass") 
+    markdown("### Audio Processing Changes\nThe following audio-related files were modified:\n#{audio_files.join('\n')}")
+  end
+
+  # Check AI model changes
+  ai_files = git.modified_files.select { |file| file.include?("AI") || file.include?("Model") }
+  if ai_files.any?
+    warn("AI model changes detected - verify model compatibility")
+    markdown("### AI Model Changes\nPlease ensure model version compatibility with #{AI_MODEL_VERSION}")
+  end
+end
+
+# Validate audio performance requirements
+def check_audio_performance
+  junit.parse "#{TEST_RESULTS_PATH}/audio_performance.xml"
+  junit.report
+
+  # Check audio processing latency
+  junit.failures.each do |failure|
+    if failure.name.include?("AudioLatency")
+      fail("Audio processing latency exceeds #{AUDIO_PERFORMANCE_THRESHOLD}")
+    end
+  end
+
+  # Verify real-time processing capabilities
+  junit.tests.each do |test|
+    if test.name.include?("RealTimeProcessing") && !test.passed?
+      fail("Real-time processing requirements not met")
+    end
+  end
+end
+
+# Validate AI model compatibility
+def check_ai_compatibility
+  # Check AI model version compatibility
+  ai_version_files = git.modified_files.select { |file| file.include?("AIModel.swift") }
+  ai_version_files.each do |file|
+    diff = git.diff_for_file(file)
+    if diff.include?("modelVersion") && !diff.include?(AI_MODEL_VERSION)
+      fail("AI model version mismatch. Expected version: #{AI_MODEL_VERSION}")
+    end
+  end
+
+  # Verify model optimization
+  if git.modified_files.include?("AIOptimization.swift")
+    warn("AI optimization changes detected - verify inference performance")
+  end
+end
+
+# Check documentation coverage
+def check_documentation
+  # Ensure audio API documentation
+  audio_files = git.modified_files.select { |file| file.include?("Audio") }
+  audio_files.each do |file|
+    content = File.read(file)
+    if content.scan(/\/{3}/).empty?
+      warn("Missing documentation in audio component: #{file}")
+    end
+  end
+
+  # Verify performance characteristics documentation
+  perf_files = git.modified_files.select { |file| file.include?("Performance") }
+  perf_files.each do |file|
+    content = File.read(file)
+    if !content.include?("Performance Characteristics")
+      warn("Missing performance documentation in: #{file}")
+    end
+  end
+end
+
+# Run SwiftLint
+swiftlint.config_file = SWIFTLINT_CONFIG_FILE
+swiftlint.lint_files inline_mode: true
+
+# Check test coverage
+xcov.report(
+  scheme: 'TALDUnia',
+  minimum_coverage_percentage: COVERAGE_THRESHOLD,
+  include_targets: 'TALDUnia.app',
+  exclude_targets: 'TALDUniaTests.xctest'
+)
+
+# Run all checks
+check_pr_size
+check_audio_performance
+check_ai_compatibility
+check_documentation
+
+# Final message
+markdown("### TALD UNIA Code Review\nAutomated checks completed. Please review the results above.")
+
+# Check for work in progress
+warn("PR is marked as Work in Progress") if github.pr_title.include? "[WIP]"
+
+# Check for merge conflicts
+warn("This PR has merge conflicts") if git.commits.any? { |c| c.message =~ /^Merge branch/ }
+
+# Encourage testing
+if git.modified_files.include?("AudioProcessor.swift") && !git.modified_files.any? { |file| file.include?("Tests") }
+  warn("Changes to audio processing code should include corresponding test updates")
+end
+
+# Check for changelog updates
+has_app_changes = !git.modified_files.grep(/^TALDUnia/).empty?
+has_changelog_changes = git.modified_files.include?("CHANGELOG.md")
+if has_app_changes && !has_changelog_changes
+  warn("Please update CHANGELOG.md with your changes")
+end
