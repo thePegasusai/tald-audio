@@ -1,0 +1,44 @@
+{
+  "info": {
+    "author": "xcode",
+    "version": 1
+  },
+  "properties": {
+    "provides-namespace": true,
+    "development-region": "en",
+    "target-platform": "macos",
+    "minimum-deployment-target": "13.0",
+    "color-space": "display-p3",
+    "preserves-vector-representation": true
+  },
+  "colors": {
+    "color-space": "display-p3",
+    "rendering-intent": "template"
+  },
+  "idioms": [
+    "mac"
+  ],
+  "appearances": [
+    {
+      "appearance": "luminosity",
+      "value": "light"
+    },
+    {
+      "appearance": "luminosity", 
+      "value": "dark"
+    }
+  ],
+  "scales": [
+    "1x",
+    "2x"
+  ],
+  "optimization": {
+    "compression": "automatic",
+    "preserve-vector-data": true,
+    "memory": "memory",
+    "deployment": {
+      "minimum-version": "13.0",
+      "maximum-version": "latest"
+    }
+  }
+}
