@@ -1,0 +1,149 @@
+# Redis Helm Chart Values
+# Chart: bitnami/redis v17.11.3
+# Redis Version: 7.2.3
+
+# Image configuration
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: 7.2.3-debian-11-r0
+  pullPolicy: IfNotPresent
+
+# Authentication and security
+auth:
+  enabled: true
+  password: ${REDIS_PASSWORD}
+  sentinel: false
+  tls:
+    enabled: true
+    certificatesSecret: redis-certs
+    certFilename: tls.crt
+    certKeyFilename: tls.key
+    certCAFilename: ca.crt
+
+# Master node configuration
+master:
+  persistence:
+    enabled: true
+    storageClass: gp3
+    size: 50Gi
+    annotations:
+      backup.velero.io/backup-volumes: data
+  
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: "2"
+    limits:
+      memory: 8Gi
+      cpu: "4"
+  
+  podSecurityContext:
+    fsGroup: 1001
+    runAsUser: 1001
+    runAsNonRoot: true
+  
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+
+# Replica configuration
+replica:
+  replicaCount: 2
+  persistence:
+    enabled: true
+    storageClass: gp3
+    size: 50Gi
+  
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: "2"
+    limits:
+      memory: 8Gi
+      cpu: "4"
+
+# Redis configuration
+redis:
+  config:
+    # Memory management
+    maxmemory: 6GB
+    maxmemory-policy: allkeys-lru
+    
+    # Persistence configuration
+    appendonly: "yes"
+    appendfsync: everysec
+    save:
+      - "900 1"
+      - "300 10"
+      - "60 10000"
+    
+    # Connection settings
+    tcp-keepalive: 300
+    timeout: 0
+    tcp-backlog: 511
+    
+    # Performance optimization
+    databases: 16
+    io-threads: 4
+    io-threads-do-reads: "yes"
+
+# Monitoring configuration
+metrics:
+  enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: "15s"
+      scrapeTimeout: "10s"
+      labels:
+        release: prometheus
+  
+  grafana:
+    enabled: true
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 1 * * *"
+  retention: "7d"
+  storageClass: gp3
+  size: 25Gi
+  annotations:
+    backup.velero.io/backup-volumes: redis-data
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 6379
+
+# Update strategy
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
+# Pod disruption budget
+pdb:
+  enabled: true
+  minAvailable: 1
+
+# Network policy
+networkPolicy:
+  enabled: true
+  ingressNSMatchLabels:
+    app: backend
+
+# Priority class
+priorityClassName: "high-priority"
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9121"
