@@ -1,0 +1,77 @@
+node_modules
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist
+build
+*.map
+
+# Development and testing
+coverage
+cypress
+tests
+**/*.test.*
+**/*.spec.*
+**/*.stories.*
+.storybook
+.vscode
+.eslintrc*
+.prettierrc*
+
+# Version control
+.git
+.gitignore
+
+# Environment and secrets
+.env*
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs and debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation
+README.md
+CHANGELOG.md
+docs
+*.md
+
+# Configuration files
+kubernetes
+docker-compose*
+Dockerfile*
+.dockerignore
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Test coverage and reports
+coverage
+.nyc_output
+reports
+
+# Development tools
+.husky
+.lint-staged
+.editorconfig
+
+# Storybook
+.storybook
+**/*.stories.*
+**/*.story.*
+
+# Miscellaneous
+.cache
+.tmp
+tmp
+temp
