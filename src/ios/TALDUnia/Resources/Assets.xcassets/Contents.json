@@ -1,0 +1,44 @@
+{
+  "info": {
+    "version": 1,
+    "author": "xcode"
+  },
+  "properties": {
+    "provides-rendering-intent": true,
+    "provides-namespace": true
+  },
+  "colors": {
+    "color-space": "display-p3",
+    "rendering-intent": "extended-range",
+    "calibration": {
+      "profile": "premium-audio-visual",
+      "accuracy": "high-precision",
+      "adaptive-contrast": true
+    }
+  },
+  "images": {
+    "compression": {
+      "mode": "automatic",
+      "quality": "optimal"
+    },
+    "memory": {
+      "preload": true,
+      "cache-policy": "aggressive"
+    }
+  },
+  "optimization": {
+    "performance-tier": "high",
+    "hardware-acceleration": "required",
+    "graphics-api": "metal"
+  },
+  "devices": [
+    "iphone",
+    "ipad",
+    "mac"
+  ],
+  "metrics": {
+    "loading-threshold": "100ms",
+    "memory-footprint": "minimal",
+    "visual-quality": "premium"
+  }
+}
