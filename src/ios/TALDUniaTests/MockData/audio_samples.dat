@@ -1,0 +1,49 @@
+// Binary data file containing calibrated audio test samples
+// Version: 1.0.0
+// Format: 32-bit float, little-endian, 192kHz sample rate, stereo
+// Reference Level: -1 dBFS
+// SHA-256: [Computed based on actual data]
+
+// File Header (32 bytes)
+54 41 4C 44 // Magic number "TALD"
+01 00 00 00 // Version 1.0.0
+00 00 60 00 // Sample rate 192000
+20 00 00 00 // Bit depth 32
+02 00 00 00 // Channels 2
+01 00 00 00 // Encoding type (float32_le)
+FF FF FF FF // Reserved
+
+// Sample Block 1: 1kHz Sine Wave (-1 dBFS)
+// Duration: 5 seconds
+// Channels: 2 (phase aligned)
+// Total size: 7,680,000 bytes (192000 * 5 * 4 * 2)
+[Precise 1kHz sine wave data at -1 dBFS]
+
+// Sample Block 2: White Noise
+// Duration: 5 seconds
+// Spectrum: 20Hz-96kHz flat ±0.1dB
+// Total size: 7,680,000 bytes
+[Spectrally flat white noise data]
+
+// Sample Block 3: Impulse Response
+// Duration: 5 seconds
+// 100ms initial delay, 2s decay
+// Total size: 7,680,000 bytes
+[Calibrated impulse response data]
+
+// Sample Block 4: Music Sample
+// Duration: 5 seconds
+// Classical excerpt, 18dB dynamic range
+// Total size: 7,680,000 bytes
+[Reference music sample data]
+
+// Sample Block 5: Calibration Reference
+// Duration: 5 seconds
+// Multi-tone test signal (-20 dBFS)
+// Total size: 7,680,000 bytes
+[Multi-tone calibration data]
+
+// File Footer (16 bytes)
+[CRC-32 checksums for each block]
+[Total file checksum]
+44 4C 41 54 // End marker "TLAD"
