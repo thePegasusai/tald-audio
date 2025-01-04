@@ -1,0 +1,115 @@
+# NGINX Ingress Controller Helm Values
+# Version: 4.8.3
+# Purpose: Production configuration for TALD UNIA Audio System ingress
+
+controller:
+  name: controller
+  
+  # Container image configuration
+  image:
+    repository: registry.k8s.io/ingress-nginx/controller
+    tag: v1.9.4
+    pullPolicy: IfNotPresent
+
+  # High availability configuration
+  replicaCount: 2
+  minAvailable: 1
+
+  # Resource allocation for optimal performance
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+  # Horizontal pod autoscaling
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  # NGINX configuration optimized for audio streaming and low latency
+  config:
+    # IP and proxy configuration
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    use-proxy-protocol: "true"
+    enable-real-ip: "true"
+    
+    # Request size limits
+    proxy-body-size: "100m"
+    
+    # Timeout settings optimized for audio streaming
+    proxy-connect-timeout: "5"
+    proxy-read-timeout: "60"
+    proxy-send-timeout: "60"
+    client-header-timeout: "5"
+    client-body-timeout: "60"
+    
+    # Connection optimization
+    keep-alive: "75"
+    keep-alive-requests: "100"
+    upstream-keepalive-connections: "100"
+    
+    # WebSocket support for real-time communication
+    enable-websockets: "true"
+    websocket-services: "tald-unia-backend-service"
+    
+    # TLS security configuration
+    ssl-protocols: "TLSv1.3"
+    ssl-ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
+    ssl-early-data: "true"
+    enable-ocsp: "true"
+    
+    # HTTP Strict Transport Security
+    hsts: "true"
+    hsts-include-subdomains: "true"
+    hsts-max-age: "31536000"
+
+  # Prometheus metrics configuration
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      interval: "15s"
+      scrapeTimeout: "10s"
+
+  # Load balancer service configuration
+  service:
+    enabled: true
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:region:account:certificate/certificate-id"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443,8443"
+    
+    # Port configuration for different protocols
+    ports:
+      http: 80
+      https: 443
+      websocket: 8080
+      audio-stream: 51820
+    
+    # Local traffic policy for reduced latency
+    externalTrafficPolicy: Local
+
+# Default backend configuration
+defaultBackend:
+  enabled: true
+  image:
+    repository: registry.k8s.io/defaultbackend-amd64
+    tag: "1.5"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+    limits:
+      cpu: 20m
+      memory: 40Mi
