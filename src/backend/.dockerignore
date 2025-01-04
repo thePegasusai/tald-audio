@@ -1,0 +1,84 @@
+node_modules
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist
+build
+coverage
+*.log
+
+# Development configurations
+.env*
+.eslintrc*
+.prettierrc*
+jest.config.*
+*.config.js
+*.config.ts
+tsconfig.json
+nodemon.json
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# IDE configurations
+.vscode
+.idea
+*.sublime-*
+*.swp
+.DS_Store
+
+# Documentation
+*.md
+docs
+CHANGELOG
+LICENSE
+
+# Test files
+test
+__tests__
+*.spec.*
+*.test.*
+jest.setup.*
+
+# Kubernetes
+kubernetes
+k8s
+*.yaml
+*.yml
+
+# Development tools
+.editorconfig
+.npmrc
+.yarnrc
+.nvmrc
+.tool-versions
+
+# Debug files
+*.map
+*.debug
+
+# Temporary files
+tmp
+temp
+.tmp
+*.tmp
+
+# Cache directories
+.cache
+.npm
+.yarn
+
+# OS generated
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
