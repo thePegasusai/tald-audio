@@ -1,0 +1,94 @@
+// TALD UNIA Localization File
+// Version: 2024.1
+// Encoding: UTF-16
+// WCAG 2.1 AA Compliant
+// Minimum iOS Version: 14.0
+
+// MARK: - Audio Control Interface
+"volume" = "Volume";
+"mute" = "Mute";
+"unmute" = "Unmute";
+"volume_percentage" = "%d%%";
+"volume_percentage.zero" = "%d percent";
+"volume_percentage.one" = "%d percent";
+"volume_percentage.other" = "%d percent";
+"enhancement" = "AI Enhancement";
+"enhancement_status" = "%@ - %@";
+"spatial" = "Spatial Audio";
+"spatial_status" = "%@ - %@";
+"room_correction" = "Room Correction";
+"head_tracking" = "Head Tracking";
+"processing_active" = "Processing Active";
+"processing_inactive" = "Processing Inactive";
+"dynamic_processing_status" = "%@ (%@)";
+
+// MARK: - Settings Interface
+"audio_processing" = "Audio Processing";
+"quality_settings" = "Quality Settings";
+"hardware_settings" = "Hardware Configuration";
+"buffer_size" = "Buffer Size";
+"buffer_size_format" = "%d samples";
+"sample_rate" = "Sample Rate";
+"sample_rate_format" = "%@ kHz";
+"bit_depth" = "Bit Depth";
+"bit_depth_format" = "%d-bit %@";
+"cloud_processing" = "Cloud Processing";
+"local_ai" = "Local AI Enhancement";
+"room_calibration" = "Room Calibration";
+"save_settings" = "Save Settings";
+"reset_defaults" = "Reset to Defaults";
+
+// MARK: - Processing Quality Levels
+"processing_quality_levels.maximum" = "Maximum Quality";
+"processing_quality_levels.balanced" = "Balanced";
+"processing_quality_levels.power_saver" = "Power Saver";
+
+// MARK: - Accessibility Labels and Hints
+"accessibility.volume_slider" = "Volume Control Slider";
+"accessibility.volume_hint" = "Double tap and hold, then slide up or down to adjust volume";
+"accessibility.volume_value" = "Current volume %d percent";
+"accessibility.enhancement_toggle" = "AI Enhancement Toggle";
+"accessibility.enhancement_hint" = "Double tap to toggle AI audio enhancement. Currently %@";
+"accessibility.spatial_toggle" = "Spatial Audio Toggle";
+"accessibility.spatial_hint" = "Double tap to toggle spatial audio processing. Currently %@";
+"accessibility.settings_button" = "Settings Button";
+"accessibility.settings_hint" = "Double tap to open audio settings";
+"accessibility.processing_status" = "Processing status: %@";
+"accessibility.quality_picker" = "Processing quality selection";
+"accessibility.quality_picker_hint" = "Double tap to select processing quality level";
+"accessibility.calibration_button" = "Room Calibration";
+"accessibility.calibration_hint" = "Double tap to start room calibration process";
+
+// MARK: - Error Messages and Recovery
+"error.processing_error" = "Processing Error";
+"error.processing_error_detail" = "An error occurred during audio processing. Error code: %@";
+"error.connection_error" = "Connection Error";
+"error.connection_error_detail" = "Unable to establish connection. Please check your network and try again.";
+"error.settings_error" = "Settings Error";
+"error.settings_error_detail" = "Unable to save settings. Please try again or reset to defaults.";
+"error.calibration_error" = "Calibration Error";
+"error.calibration_error_detail" = "Room calibration failed. Please ensure quiet surroundings and try again.";
+"error.try_again" = "Try Again";
+"error.dismiss" = "Dismiss";
+"error.error_recovery" = "Tap to see recovery options";
+"error.error_support" = "Contact support: Error ID %@";
+
+// MARK: - Semantic Descriptions for Complex UI
+"semantic.volume_control" = "Adjusts the output volume of all audio";
+"semantic.enhancement_control" = "Controls AI-powered audio enhancement processing";
+"semantic.spatial_control" = "Manages 3D spatial audio positioning";
+"semantic.room_correction" = "Automatically calibrates audio for room acoustics";
+"semantic.quality_settings" = "Adjusts processing quality and performance balance";
+"semantic.hardware_config" = "Configure audio hardware parameters";
+
+// MARK: - Dynamic Type Support
+"dynamic_type.heading" = "TALD UNIA Audio Control";
+"dynamic_type.subheading" = "Premium Audio Processing";
+"dynamic_type.body" = "Adjust your audio settings";
+"dynamic_type.caption" = "Processing status information";
+
+// MARK: - RTL Support Indicators
+"direction.start" = "Start";
+"direction.end" = "End";
+"direction.leading" = "Leading";
+"direction.trailing" = "Trailing";
