@@ -1,0 +1,194 @@
+# TALD UNIA Audio System SwiftLint Configuration
+# Version: 1.0
+# Optimized for high-performance audio processing and AI components
+
+# Disabled rules that may interfere with audio/AI processing patterns
+disabled_rules:
+  - force_cast
+  - force_try
+  - line_length
+  - function_parameter_count
+
+# Opt-in rules for enhanced code quality and safety
+opt_in_rules:
+  - empty_count
+  - missing_docs
+  - closure_spacing
+  - explicit_init
+  - implicit_return
+  - unused_import
+  - unused_declaration
+  - array_init
+  - contains_over_filter_count
+  - convenience_type
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_string
+  - fallthrough
+  - fatal_error_message
+  - first_where
+  - flatmap_over_map_reduce
+  - identical_operands
+  - joined_default_parameter
+  - last_where
+  - legacy_multiple
+  - legacy_random
+  - literal_expression_end_indentation
+  - multiline_arguments
+  - multiline_function_chains
+  - multiline_literal_brackets
+  - multiline_parameters
+  - operator_usage_whitespace
+  - overridden_super_call
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - strict_fileprivate
+  - toggle_bool
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - yoda_condition
+
+# Rule configurations
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+file_length:
+  warning: 400
+  error: 1000
+
+type_body_length:
+  warning: 300
+  error: 500
+
+function_body_length:
+  warning: 50
+  error: 100
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+  ignores_case_statements: true
+
+type_name:
+  min_length: 3
+  max_length: 50
+  excluded:
+    - DSP
+    - EQ
+    - FFT
+    - RMS
+
+identifier_name:
+  min_length: 2
+  max_length: 40
+  excluded:
+    - id
+    - x
+    - y
+    - z
+    - i
+    - j
+    - k
+    - db
+    - hz
+    - ms
+    - fs
+    - q
+    - t
+
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+
+trailing_whitespace:
+  ignores_empty_lines: true
+  ignores_comments: true
+
+vertical_whitespace:
+  max_empty_lines: 2
+
+closure_spacing: true
+
+colon:
+  apply_to_dictionaries: true
+
+comma:
+  mandatory_comma: true
+
+control_statement: true
+
+deployment_target:
+  macOS_deployment_target: '13.0'
+
+# Excluded paths
+excluded:
+  - Pods
+  - TALDUniaTests
+  - TALDUniaUITests
+  - fastlane
+  - scripts
+  - "*.generated.swift"
+  - "*/Generated/*.swift"
+  - "*/Resources/*.swift"
+
+# Reporter type
+reporter: "xcode"
+
+# Custom rules for TALD UNIA specific requirements
+custom_rules:
+  audio_processor_protocol:
+    name: "Audio Processor Protocol"
+    regex: "class.*AudioProcessor"
+    message: "Audio processors must implement AudioProcessing protocol for consistent interface"
+    severity: error
+
+  ai_model_versioning:
+    name: "AI Model Version Check"
+    regex: "AIModel.*init.*version"
+    message: "AI models must specify version in initialization for tracking and compatibility"
+    severity: error
+
+  spatial_audio_config:
+    name: "Spatial Configuration"
+    regex: "SpatialProcessor.*configure"
+    message: "Spatial processors must call configure method for proper initialization"
+    severity: error
+
+  dsp_performance:
+    name: "DSP Performance Check"
+    regex: "DSPProcessor.*process"
+    message: "DSP processors must implement high-performance processing methods using SIMD"
+    severity: warning
+
+  hardware_abstraction:
+    name: "Hardware Layer Access"
+    regex: "AudioHardware.*direct"
+    message: "Use hardware abstraction layer instead of direct hardware access for portability"
+    severity: error
+
+  buffer_overflow_check:
+    name: "Buffer Overflow Prevention"
+    regex: "AudioBuffer.*unsafe"
+    message: "Audio buffer access must use safe methods to prevent overflow"
+    severity: error
+
+  realtime_performance:
+    name: "Realtime Performance"
+    regex: ".*@objc.*audio.*process"
+    message: "Avoid @objc in real-time audio processing paths"
+    severity: warning
+
+  memory_management:
+    name: "Audio Memory Management"
+    regex: "allocate.*AudioBuffer"
+    message: "Use AudioBufferPool for efficient memory management"
+    severity: warning
