@@ -1,0 +1,31 @@
+source "https://rubygems.org"
+ruby "3.2.0"
+
+gem "fastlane", "~> 2.217.0"
+gem "cocoapods", "~> 1.14.0"
+gem "xcodeproj", "~> 1.24.0"
+gem "danger", "~> 9.4.0"
+gem "danger-swiftlint", "~> 0.34.0"
+gem "xcode-install", "~> 2.8.1"
+gem "bundler", "~> 2.4.0"
+gem "xcpretty", "~> 0.3.0"
+gem "junit2html", "~> 0.1.0"
+gem "cocoapods-core", "~> 1.12.1"
+gem "swiftlint", "~> 0.52.0"
+
+group :development do
+  gem "rbenv"
+end
+
+group :test do
+  gem "rspec", "~> 3.12"
+  gem "rubocop", "~> 1.50"
+  gem "simplecov", "~> 0.22"
+end
+
+group :plugins do
+  gem "fastlane-plugin-versioning"
+  gem "fastlane-plugin-firebase_app_distribution"
+  gem "fastlane-plugin-test_center"
+  gem "fastlane-plugin-xcresult_to_junit"
+end
