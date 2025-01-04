@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tald-unia-web-config
+  namespace: tald-unia
+  labels:
+    app: tald-unia-web
+    component: frontend
+    part-of: tald-unia
+data:
+  # Core Application Settings
+  VITE_APP_NAME: "TALD UNIA Audio System"
+  
+  # API Configuration - Optimized for <10ms latency
+  VITE_API_URL: "http://api-service:3000/api/v1"
+  VITE_WS_URL: "ws://api-service:3000"
+  
+  # Audio Processing Configuration - THD+N < 0.0005%
+  VITE_DEFAULT_SAMPLE_RATE: "48000"  # 48kHz for high-fidelity audio
+  VITE_DEFAULT_BUFFER_SIZE: "1024"   # Optimized for latency/quality balance
+  VITE_DEFAULT_CHANNELS: "2"         # Stereo configuration
+  
+  # Authentication Configuration
+  VITE_AUTH_DOMAIN: "${AUTH_DOMAIN}"
+  VITE_AUTH_CLIENT_ID: "${AUTH_CLIENT_ID}"
+  VITE_AUTH_AUDIENCE: "https://api.tald-unia.com"
+  
+  # Monitoring and Logging
+  VITE_METRICS_ENABLED: "true"
+  VITE_LOG_LEVEL: "info"
+  
+  # Feature Flags and System Configuration
+  VITE_ENABLE_SPATIAL_AUDIO: "true"
+  VITE_ENABLE_AI_ENHANCEMENT: "true"
+  VITE_ENABLE_ROOM_CORRECTION: "true"
+  
+  # WebSocket Configuration - Optimized for real-time streaming
+  VITE_WS_RECONNECT_INTERVAL: "1000"
+  VITE_WS_MAX_RECONNECT_ATTEMPTS: "5"
+  VITE_WS_HEARTBEAT_INTERVAL: "30000"
+  
+  # Performance Configuration
+  VITE_MAX_CONCURRENT_CONNECTIONS: "10"
+  VITE_REQUEST_TIMEOUT_MS: "5000"
+  VITE_CACHE_TTL_SECONDS: "3600"
+  
+  # Security Configuration
+  VITE_ENABLE_CSP: "true"
+  VITE_SECURE_COOKIES: "true"
+  VITE_API_RATE_LIMIT: "100"
+  
+  # Error Handling
+  VITE_ERROR_REPORTING_ENABLED: "true"
+  VITE_ERROR_SAMPLING_RATE: "1.0"
