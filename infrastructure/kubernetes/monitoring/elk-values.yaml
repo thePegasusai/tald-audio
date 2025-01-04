@@ -1,0 +1,131 @@
+# ELK Stack Helm Values Configuration for TALD UNIA Audio System
+# Version: 7.17.3
+
+# Global settings
+global:
+  namespace: monitoring
+  imageRegistry: docker.elastic.co
+  imagePullSecrets: []
+
+# Elasticsearch Configuration
+elasticsearch:
+  replicas: 3
+  minimumMasterNodes: 2
+  
+  persistence:
+    enabled: true
+    size: 100Gi
+    storageClass: standard
+  
+  resources:
+    requests:
+      cpu: "1"
+      memory: 4Gi
+    limits:
+      cpu: "2"
+      memory: 8Gi
+  
+  security:
+    enabled: true
+    tls:
+      enabled: true
+      certificateSecret: elasticsearch-certs
+  
+  monitoring:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: "30s"
+
+# Logstash Configuration
+logstash:
+  replicas: 2
+  
+  persistence:
+    enabled: true
+    size: 20Gi
+  
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  
+  pipelines:
+    audio_logs:
+      input:
+        beats:
+          port: 5044
+          type: audio_processing
+      filters:
+        - grok:
+            match:
+              message: "THD:%{NUMBER:thd_value}%,Latency:%{NUMBER:latency_ms}ms"
+      output:
+        elasticsearch:
+          hosts: ["elasticsearch-master:9200"]
+          index: "audio-logs-%{+YYYY.MM.dd}"
+    
+    system_logs:
+      input:
+        beats:
+          port: 5045
+          type: system_metrics
+      output:
+        elasticsearch:
+          hosts: ["elasticsearch-master:9200"]
+          index: "system-logs-%{+YYYY.MM.dd}"
+
+# Kibana Configuration
+kibana:
+  replicas: 2
+  
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  
+  dashboards:
+    audio_monitoring:
+      title: "Audio Processing Logs"
+      visualizations:
+        - title: "THD Trends"
+          type: line
+          index: audio-logs-*
+          field: thd_value
+        - title: "Processing Latency"
+          type: gauge
+          index: audio-logs-*
+          field: latency_ms
+    
+    system_monitoring:
+      title: "System Performance Logs"
+      visualizations:
+        - title: "Resource Usage"
+          type: area
+          index: system-logs-*
+          fields: ["cpu_usage", "memory_usage"]
+  
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress-class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - kibana.tald-unia.local
+    tls:
+      - secretName: kibana-tls
+        hosts:
+          - kibana.tald-unia.local
+  
+  security:
+    enabled: true
+    tls:
+      enabled: true
+      certificateSecret: kibana-certs
