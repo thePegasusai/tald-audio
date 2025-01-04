@@ -1,0 +1,135 @@
+# Istio Helm values configuration for TALD UNIA Audio System
+# Version: istio/istio@1.20.0
+# Cert-manager: jetstack/cert-manager@1.13.2
+
+global:
+  # Global proxy settings optimized for audio processing
+  proxy:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "2000m"
+        memory: "1024Mi"
+    accessLogging:
+      enabled: true
+      format: "JSON"
+    concurrency: 2
+    networkMetrics:
+      enabled: true
+
+  # Mesh configuration with tracing and locality-based load balancing
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100
+        zipkin:
+          address: "jaeger-collector.monitoring:9411"
+      proxyMetadata:
+        AUDIO_PROCESSING: "enabled"
+    localityLbSetting:
+      enabled: true
+      failover:
+        - from: "region"
+          to: "closeregion"
+
+pilot:
+  # Control plane settings with HA configuration
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2048Mi"
+    limits:
+      cpu: "1000m"
+      memory: "4096Mi"
+  autoscaleEnabled: true
+  autoscaleMin: 2
+  autoscaleMax: 5
+  replicaCount: 2
+  traceSampling: 100.0
+  podAntiAffinityPreset: "hard"
+
+gateways:
+  istio-ingressgateway:
+    type: LoadBalancer
+    autoscaleEnabled: true
+    autoscaleMin: 2
+    autoscaleMax: 5
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "2000m"
+        memory: "1024Mi"
+    ports:
+      - name: http2
+        port: 80
+        targetPort: 80
+        protocol: TCP
+      - name: https
+        port: 443
+        targetPort: 443
+        protocol: TCP
+      - name: websocket
+        port: 8080
+        targetPort: 8080
+        protocol: TCP
+      - name: grpc
+        port: 15443
+        targetPort: 15443
+        protocol: TCP
+        maxConnections: 10000
+      - name: audio-stream
+        port: 9443
+        targetPort: 9443
+        protocol: TCP
+        maxConnections: 5000
+    serviceAnnotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+
+security:
+  # Enhanced security with strict mTLS and certificate rotation
+  mtls:
+    enabled: true
+    mode: "STRICT"
+  certificateProvider:
+    type: "istiod"
+    rotationInterval: "24h"
+    workloadCertTTL: "24h"
+  peerAuthentication:
+    mode: "STRICT"
+    portLevelMtls:
+      "9443":
+        mode: "STRICT"
+
+telemetry:
+  v2:
+    enabled: true
+    prometheus:
+      enabled: true
+      configOverride:
+        inboundSidecar:
+          metrics:
+            - name: "audio_processing_latency"
+              type: "Histogram"
+              dimensions:
+                source_app: "string"
+                destination_app: "string"
+            - name: "audio_quality_score"
+              type: "Gauge"
+              dimensions:
+                processing_type: "string"
+                audio_format: "string"
+            - name: "stream_errors_total"
+              type: "Counter"
+              dimensions:
+                error_type: "string"
+                source_app: "string"
+    tracing:
+      customTags:
+        audio_processing_type: "literal"
+        audio_format: "literal"
