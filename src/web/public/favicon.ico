@@ -1,0 +1,39 @@
+[Binary ICO file content with the following specifications]
+
+File Format: ICO (Windows Icon)
+Total Size: ≤15KB
+Color Depth: 32-bit RGBA
+
+Contains 4 PNG-compressed images:
+1. 16x16 pixels
+2. 24x24 pixels
+3. 32x32 pixels
+4. 64x64 pixels
+
+Design Implementation:
+- Minimalist audio wave symbol centered in frame
+- TALD UNIA brand symbol integration
+- Transparent background for theme adaptation
+- Primary brand color with proper contrast
+- Clean lines optimized for small size rendering
+- Pixel-perfect alignment at each resolution
+- Anti-aliasing optimized for screen display
+
+Compression:
+- PNG compression for each size variant
+- Optimized for web delivery
+- Total file size under 15KB
+
+Platform Support:
+- Windows ICO native format
+- macOS ICNS conversion compatible
+- iOS/Android PWA icon compatible
+- High-DPI/Retina display optimized
+
+Browser Compatibility:
+Chrome ≥49
+Firefox ≥52
+Safari ≥9
+Edge ≥79
+
+Cache-Control: public, max-age=31536000
