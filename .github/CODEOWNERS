@@ -1,0 +1,46 @@
+# Unless a later match takes precedence, @tald-unia/core-team 
+# will be requested for review when someone opens a pull request.
+*       @tald-unia/core-team
+
+# Backend service code with enhanced security requirements
+src/backend/**    @tald-unia/backend-team
+
+# Audio processing module with dual team ownership
+src/backend/src/audio/**    @tald-unia/audio-team @tald-unia/backend-team
+
+# AI processing module with specialized team oversight
+src/backend/src/ai/**    @tald-unia/ai-team @tald-unia/backend-team
+
+# Spatial audio module with dedicated team responsibility
+src/backend/src/spatial/**    @tald-unia/spatial-team @tald-unia/backend-team
+
+# Security-related code and configuration requires security team review
+**/security/**    @tald-unia/security-team
+
+# Infrastructure and deployment configuration with DevOps oversight
+infrastructure/**    @tald-unia/devops-team
+
+# Test files with QA team ownership
+**/*.test.ts    @tald-unia/qa-team
+
+# GitHub specific files require core team review
+.github/**    @tald-unia/core-team
+
+# Security-sensitive configurations require security team review
+.github/workflows/**    @tald-unia/security-team @tald-unia/devops-team
+**/Dockerfile    @tald-unia/security-team @tald-unia/devops-team
+**/docker-compose*.yml    @tald-unia/security-team @tald-unia/devops-team
+
+# Package dependencies require security review
+package.json    @tald-unia/security-team @tald-unia/core-team
+package-lock.json    @tald-unia/security-team @tald-unia/core-team
+yarn.lock    @tald-unia/security-team @tald-unia/core-team
+
+# Configuration files require both security and core team review
+*.config.js    @tald-unia/security-team @tald-unia/core-team
+*.config.ts    @tald-unia/security-team @tald-unia/core-team
+.env.example    @tald-unia/security-team @tald-unia/core-team
+
+# Documentation changes require core team review
+docs/**    @tald-unia/core-team
+*.md    @tald-unia/core-team
